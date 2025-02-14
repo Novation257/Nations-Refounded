@@ -31,7 +31,7 @@ Measures of Success
 ## Solution and Strategy
 - Our software follows a client-server model, where connected computers are clients sending data to the central “server” computer, which will process the data and send the output back to the client machines. 
 - The main components of Nations Refounded are the client computers, which connect to the server computer to access the game data, the server, which holds all of the data for each nation, and the networking software that connects them.
-(Block diagram is in this directory, under the file name cs340-project-block-diagram.png)
+![High level block diagram of Nations Refounded linked here](cs340-project-block-diagram.png)
 - The most minimal system that would have value to a customer is a program that players are able to log into to access a map consisting of linked nation nodes that are able to harvest food and natural resources, manufacture goods and have cities with inhabitants. The nations will be able to interact with each other and engage in travel, trade, and combat.
 - All of the nations will be stored on a server thats holds the data for all of them and updates it in real time.
 - Possible enhancements could include in-game money being produced on its own by taxes, rare resources and complex products, and water sources such as oceans
