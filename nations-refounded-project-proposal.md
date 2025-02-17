@@ -5,7 +5,7 @@
 ## Intro
 - Our project is called Nations Refounded, a multiplayer game in which players can build their own civilizations.
 - Our motivation was to try to recreate an old game that was a lot of fun to play with added capabilities
-- A few years ago, there used to be a game called Nations, in which players compete to build empires and . However, Nations is now offline.
+- A few years ago, there used to be a game called [Nations](https://nationsgame.fandom.com/wiki/NationsGame), in which players form alliances and compete to build empires. However, Nations is now offline.
 - While Nations Refounded is not a novel idea, it restores a currently-offline multiplayer game with added functionality.
 - Nic is working on game design, while Jules is developing the networking and multiplayer capabilities
 
@@ -57,32 +57,35 @@ Fixed roles - we want to make sure we each focus on tasks that work with our ski
 # Tentative project schedule - try to have each task done by the end of the week they’re listed in
 ## Sprint 1
 Week 1: Feb 17 - 21
-Set up hardware, get teamviewer running - Nic
-Further discuss game/system design - Both
-Working camera (pan and zoom), and very basic map with terrain types (mountains, forest, plains, river, ocean) - Nic
-Begin resource node framework? - Nic
-Establish very basic multiplayer framework (be able to send a string to and from the host machine and a client machine) - Jules
+- Set up hardware, get teamviewer running - Nic
+- Further discuss game/system design - Both
+- Working camera (pan and zoom), and very basic map with terrain types (mountains, forest, plains, river, ocean) - Nic
+- Begin resource node framework? - Nic
+- Establish very basic multiplayer framework (be able to send a string to and from the host machine and a client machine) - Jules
+
 Week 2: Feb 24 - 28
-Working resource nodes (no factories/extractors yet) - Nic
-Unit framework? - Nic
-Event framework to handle time-based events - Nic
-Network interface that can send player actions to and get game updates from the host machine - Nic
+- Working resource nodes (no factories/extractors yet) - Nic
+- Unit framework? - Nic
+- Event framework to handle time-based events - Nic
+- Network interface that can send player actions to and get game updates from the host machine - Nic
 
 ## Sprint 2
 Week 3: Mar 3 - 7
+
 – True multiplayer week –
-Username/password system to verify players - Jules
-Interface to start game with player sign-up - Jules
-Certain players can only see/control certain elements in the game (ie. players can only control units they own, UI shows correct player’s stats/resources) - Nic
+- Username/password system to verify players - Jules
+- Interface to start game with player sign-up - Jules
+- Certain players can only see/control certain elements in the game (ie. players can only control units they own, UI shows correct player’s stats/resources) - Nic
+
 Week 4: Mar 10 - 14
 – Finish multiplayer by end of week if nothing else –
-Pioneer unit and cities implemented (all bullet points under cities listed above should be completed except city conquering) - Nic
-Factories and extractors working with correct resources being produced/consumed - Jules
+- Pioneer unit and cities implemented (all bullet points under cities listed above should be completed except city conquering) - Nic
+- Factories and extractors working with correct resources being produced/consumed - Jules
 
 ## Sprint 3 and beyond?
 Week 5: Mar 3 - 7
-Catch-up week to finish previous goals and fix technical debt
-Finish combat system… add several different types of units and add city conquering system
-Game balance
-Discuss stretch ideas
+- Catch-up week to finish previous goals and fix technical debt
+- Finish combat system… add several different types of units and add city conquering system
+- Game balance
+- Discuss stretch ideas
 
