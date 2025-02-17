@@ -1,5 +1,5 @@
  # Nations Refounded - A Persistent-World Real-Time Strategy Game 
-### Team: TEAM_NAME
+### Team Name (for GitHub as well): Broken Arrow Game Studio 
 ### Members: Jules Prater, Nic Dawson
 
 ## Intro
