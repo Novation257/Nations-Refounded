@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyex4x6u3epw2"]
+
+[ext_resource type="Script" path="res://cameraControls.gd" id="1_bt2k0"]
+[ext_resource type="Texture2D" uid="uid://caint4qili3pi" path="res://sprites/cyprusMap.png" id="2_i88or"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("1_bt2k0")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasGroup"]
+texture = ExtResource("2_i88or")
