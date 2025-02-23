@@ -1,8 +1,28 @@
 extends Camera2D
 
+var zoom_sensitivity:float = .1
+var zoom_limits:Vector2 = Vector2(.3,5)
+var mouse_starting_pos: Vector2 = Vector2(0,0)
+var camera_starting_pos: Vector2 = Vector2(0,0)
+
+# Changes zoom based on sensitivity and direction
+# Will keep zoom's value between specified limits
+func change_zoom(direction:int) -> void:
+	zoom[0] *= 1+ (direction*zoom_sensitivity)
+	zoom[0] = max(zoom_limits[0], zoom[0])
+	zoom[0] = min(zoom_limits[1], zoom[0])
+	zoom[1] = zoom[0]
+
+# Handles scroll wheel inputs
 func _input(event):
-	if event is InputEventPanGesture:
-		print("scrolled: " + str(event.delta.y))
+	# Mouse inputs
+	if event is InputEventMouseButton:
+		# Scroll Up - zoom in
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			change_zoom(1)
+		# Scrol Down - zoom out
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			change_zoom(-1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -11,18 +31,17 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	var mouse_movement_starting_pos: Vector2
 	
-	if Input.is_action_pressed("ScrollUp"):
-		print("ScrollUp")
-		zoom[0] *= 1.03
-		zoom[1] *= 1.03
-	if Input.is_action_pressed("ScrollDown"):
-		print("ScrollDown")
-		zoom[0] *= .97
-		zoom[1] *= .97
+	# Handles moving camera
+	# At start of click, get mouse and camera position
 	if Input.is_action_just_pressed("RMB"):
-		mouse_movement_starting_pos = get_global_mouse_position()
+		camera_starting_pos = position
+		mouse_starting_pos = get_viewport().get_mouse_position()
+		print(mouse_starting_pos)
+	# Update camera position based on mouse movement while clicked
+	elif Input.is_action_pressed("RMB"):
+		var mouse_curr_pos = get_viewport().get_mouse_position()
+		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
 		
 		
 	pass
