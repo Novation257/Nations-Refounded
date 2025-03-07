@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyisil0laddwh"]
+
+[ext_resource type="Texture2D" uid="uid://cv1gw87h4waa7" path="res://sprites/icon.svg" id="1_5e3ej"]
+
+[node name="GenericResourceNode" type="Node2D"]
+
+[node name="Bananas RN" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_5e3ej")

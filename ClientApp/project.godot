@@ -13,7 +13,12 @@ config_version=5
 config/name="NR Client"
 run/main_scene="res://masterScene.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://sprites/icon.svg"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [editor_plugins]
 
