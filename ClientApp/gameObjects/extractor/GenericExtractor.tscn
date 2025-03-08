@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8witt57rpqyq"]
+
+[ext_resource type="Script" path="res://gameObjects/extractor/extractor.gd" id="1_mq0md"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x1knm"]
+
+[node name="Extractor Cube" type="Polygon2D"]
+scale = Vector2(7.5, 7.418)
+color = Color(0.909804, 0.886275, 0.141176, 0.482353)
+polygon = PackedVector2Array(-10, -10, -10, 10, 10, 10, 10, -10)
+script = ExtResource("1_mq0md")
+metadata/outputs = {}
+metadata/ownerID = 0
+metadata/type = ""
+
+[node name="Extractor Cube" type="Polygon2D" parent="."]
+position = Vector2(0.13335, 0.269653)
+scale = Vector2(0.25, 0.248)
+color = Color(0.403922, 0.815686, 0.372549, 1)
+polygon = PackedVector2Array(-10, -10, -10, 10, 10, 10, 10, -10)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_x1knm")
+
+[node name="UI" type="Panel" parent="."]
+unique_name_in_owner = true
+offset_left = 32.0
+offset_top = -27.0
+offset_right = 185.0
+offset_bottom = 31.0
+scale = Vector2(0.2, 0.2)
+
+[node name="ownerID" type="Label" parent="UI"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 29.1763
+offset_right = 104.0
+offset_bottom = 52.1763
+text = "OwnerID: 12"
+
+[node name="type" type="Label" parent="UI"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 7.33333
+offset_top = 4.237
+offset_right = 202.333
+offset_bottom = 27.237
+text = "Extractor Name"
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]

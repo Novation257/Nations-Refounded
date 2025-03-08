@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://lkthen7k7xap"]
 
-[ext_resource type="Script" path="res://scripts/cameraControls.gd" id="1_0pqkt"]
+[ext_resource type="Script" path="res://UI/cameraControls.gd" id="1_0pqkt"]
 
 [node name="Camera2D" type="Camera2D"]
 limit_left = -5000
@@ -19,6 +19,7 @@ offset_bottom = 165.0
 pivot_offset = Vector2(-5, -5)
 
 [node name="Money Title" type="Label" parent="UI/Resources"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 63.0
@@ -34,6 +35,7 @@ offset_bottom = 53.0
 text = "Food:"
 
 [node name="Energy Title" type="Label" parent="UI/Resources"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 55.0
 offset_right = 63.0
@@ -41,6 +43,7 @@ offset_bottom = 78.0
 text = "Energy:"
 
 [node name="BM Title" type="Label" parent="UI/Resources"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 80.0
 offset_right = 82.0
@@ -48,6 +51,7 @@ offset_bottom = 103.0
 text = "Materials:"
 
 [node name="CG Title" type="Label" parent="UI/Resources"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 105.0
 offset_right = 100.0
@@ -55,6 +59,7 @@ offset_bottom = 128.0
 text = "Cons. Goods:"
 
 [node name="Composites Title" type="Label" parent="UI/Resources"]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 130.0
 offset_right = 100.0
@@ -73,6 +78,7 @@ horizontal_alignment = 2
 
 [node name="Food Number" type="Label" parent="UI/Resources"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 30.0
 offset_right = 183.0
@@ -82,6 +88,7 @@ horizontal_alignment = 2
 
 [node name="Energy Number" type="Label" parent="UI/Resources"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 55.0
 offset_right = 183.0
@@ -91,6 +98,7 @@ horizontal_alignment = 2
 
 [node name="BM Number" type="Label" parent="UI/Resources"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 80.0
 offset_right = 183.0
@@ -100,6 +108,7 @@ horizontal_alignment = 2
 
 [node name="CG Number" type="Label" parent="UI/Resources"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 105.0
 offset_right = 183.0
@@ -109,6 +118,7 @@ horizontal_alignment = 2
 
 [node name="Composites Number" type="Label" parent="UI/Resources"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 130.0
 offset_right = 183.0

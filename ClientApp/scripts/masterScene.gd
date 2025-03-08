@@ -11,6 +11,25 @@ var BMUI:Label
 var CGUI:Label
 var CompositesUI:Label
 
+func place_recource_extractor(type:String) -> void:
+	# Load resource and instanciate
+	var newExRes:Resource = load("res://gameObjects/extractor/GenericExtractor.tscn")
+	var newEx = newExRes.instantiate()
+	
+	# Set extractor variables and metadata
+	newEx.name = type
+	newEx.set_meta("ownerID", curr_player.id)
+	newEx.set_meta("type", type)
+	newEx.position = get_global_mouse_position()
+	
+	# Add to extractors node
+	get_node("%Extractors").add_child(newEx)
+	
+	pass
+
+
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	curr_player = Player.new()
@@ -41,7 +60,14 @@ func update_ui() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Update time
 	if(time != Time.get_ticks_msec() / 1000):
 		time = Time.get_ticks_msec() / 1000
 		print(time)
+	
+	# Run input routines if button is pressed
+	if Input.is_action_just_pressed("debug1"):
+		place_recource_extractor("Rice Farm")
+	
+	# Update UI
 	update_ui()
