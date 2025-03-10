@@ -18,13 +18,12 @@ func _ready() -> void:
 	
 	pass
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if UI.visible == true:
 		var m_pos:Vector2 = get_local_mouse_position()
-		UI.position[0] = m_pos[0] + 2
-		UI.position[1] = m_pos[1] + 2
+		UI.position[0] = m_pos[0] + 10
+		UI.position[1] = m_pos[1] - 35
 	
 	pass
 
