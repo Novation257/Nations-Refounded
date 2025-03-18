@@ -26,18 +26,16 @@ func combine(other:Resources) -> Resources:
 	composites += other.composites
 	return self
 
-# Same as combine, but does nothing and returns null if one of the values would be made negative
-func combineNoNeg(other:Resources) -> Resources:
-	self.combine(other)
-	for res in self.asArray():
-		if res < 0:
-			# Undo combine by negating other Resource struct and adding it to self
-			self.combine(other.applyToAll(func(x:int): return -x))
-			return null
-	return self
+# Returns true all resources will be positive after combining
+func canCombine(other:Resources) -> bool:
+	var otherArray:Array = other.asArray()
+	var selfArray:Array = self.asArray()
+	for i in range(selfArray.size()):
+		if (selfArray[i] + otherArray[i]) < 0: return false
+	return true
 
 func asArray() -> Array:
-	var resArray:Array
+	var resArray:Array[int]
 	resArray.append(money)
 	resArray.append(food)
 	resArray.append(energy)
@@ -45,3 +43,8 @@ func asArray() -> Array:
 	resArray.append(consumer_goods)
 	resArray.append(composites)
 	return resArray
+
+func print() -> void:
+	var selfArray = self.asArray()
+	for i in range(selfArray.size()):
+		print(str(i) + ": " + str(selfArray[i]))

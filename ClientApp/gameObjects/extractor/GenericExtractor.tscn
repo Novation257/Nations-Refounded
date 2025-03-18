@@ -38,11 +38,14 @@ func setProduction(type:String) -> void:
 			outputs.consumer_goods = 3
 		\"Coal Mine\":
 			inputs.money = 5
-			outputs.energy = 12
+			outputs.energy = 15
 		\"Dairy Farm\":
 			inputs.energy = 5
 			inputs.money = 5
 			outputs.food = 12
+		\"Wind Turbine\":
+			inputs.money = 3
+			outputs.energy = 7
 	return
 
 # Add production to the extractor and increase stockpile when necessary
@@ -59,16 +62,25 @@ func doProductionTick(time:int) -> void:
 		UI_TTP.text = \"TTP: \" + str(productionCountdown)
 	return
 
-# Collect the production stored in the extractor
-func collect() -> Resources:
+# Return the resources stored in the extractor without subtracting from the stockpile
+func get_stored() -> Resources:
 	# Combine into one resource struct with inputs being negative and outputs being positive
-	var temp:Resources = outputs
-	var negInputs = inputs
+	var temp:Resources = Resources.new()
+	temp.combine(outputs)
+	var negInputs = Resources.new()
+	negInputs.combine(inputs)
 	negInputs.applyToAll(func negate(x:int): return -x)
 	temp.combine(negInputs)
 	
 	# Multiply every resource by stockpile
 	temp.applyToAll(func mul(x:int): return x * stockpile)
+	
+	return temp
+
+# Collect the production stored in the extractor
+func collect() -> Resources:
+	# Get resources stored in the extractor
+	var temp:Resources = get_stored()
 	
 	# Reset stockpile and return resource changes
 	stockpile = 0
@@ -99,6 +111,9 @@ func _process(delta: float) -> void:
 		var m_pos:Vector2 = get_local_mouse_position()
 		UI.position[0] = m_pos[0] + 10
 		UI.position[1] = m_pos[1] + 0
+	
+	clicked = false
+	
 	return
 
 
@@ -113,10 +128,10 @@ func _on_area_2d_mouse_exited() -> void:
 
 # On left click - collect resources
 func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	clicked = false
-	if(event.is_action_pressed(\"LMB\")):
-		print(name + \" clicked\")
+	if(Input.is_action_just_pressed(\"LMB\")):
+		#print(name + \" clicked\")
 		clicked = true
+	else: clicked = false
 	return
 "
 

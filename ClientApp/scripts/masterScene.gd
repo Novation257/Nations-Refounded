@@ -27,8 +27,21 @@ func placeRecourceExtractor(type:String) -> void:
 	
 	pass
 
-
-
+# Check if any extractor was clicked and attempt to collect resources
+func check_extractor_collection(extractors:Array[Node]) -> void:
+	for extractor in extractors:
+		# If the clicked extractor is owned by the current player
+		if extractor.clicked == true && extractor.get_meta("ownerID") == curr_player.id:
+			# If there are no resources in the extractor...
+			if extractor.stockpile == 0: print(extractor.name + " has no resources to collect")
+			# If the player has the resources to collect...
+			elif curr_player.resources.canCombine(extractor.get_stored()):
+				print("Collected resources from " + extractor.name)
+				extractor.get_stored().print()
+				curr_player.resources.combine(extractor.collect())
+			else:
+				print("Not enough resources to collect from " + extractor.name)
+				extractor.get_stored().print()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -65,24 +78,35 @@ func _process(delta: float) -> void:
 	# Update time and time-based events
 	if(time != Time.get_ticks_msec() / 1000):
 		time = Time.get_ticks_msec() / 1000
-		print(time)
+		#print(time)
 		
 		# Update extractors
 		for extractor in extractors:
 			extractor.doProductionTick(360)
 	
 	# Extractor clicked - collect stockpiled resources
-	for extractor in extractors:
-		if extractor.clicked == true && extractor.get_meta("ownerID") == curr_player.id:
-			var resChange:Resources = extractor.collect()
-			var newRes:Resources = curr_player.resources.combineNoNeg(resChange)
-				
+	check_extractor_collection(extractors)
 	
 	# Run input routines if button is pressed
 	if Input.is_action_just_pressed("debug1"):
 		placeRecourceExtractor("Rice Farm")
+	if Input.is_action_just_pressed("debug2"):
+		placeRecourceExtractor("Wind Turbine")
 	
 
 	
 	# Update UI
 	update_ui()
+
+# Collision priority
+# Rivers/lakes
+# Mountains
+# Forest
+# Plains
+# Barren
+# Ocean
+
+func _on_plains_mouse_entered() -> void:
+	#print()
+	#print("TOUCHED")
+	pass # Replace with function body.
