@@ -32,7 +32,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
-	# Handles moving camera
+	# Camera movement via mouse
 	# At start of click, get mouse and camera position
 	if Input.is_action_just_pressed("LMB"):
 		camera_starting_pos = position
@@ -42,6 +42,9 @@ func _process(delta: float) -> void:
 	elif Input.is_action_pressed("LMB"):
 		var mouse_curr_pos = get_viewport().get_mouse_position()
 		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
-		
+	
+	# Camera movement via arrow keys
+	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (7.5 * 1/zoom[0])
+	
 		
 	pass
