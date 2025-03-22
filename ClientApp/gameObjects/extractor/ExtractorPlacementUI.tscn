@@ -1,0 +1,201 @@
+[gd_scene load_steps=4 format=3 uid="uid://yatkrj6tar0w"]
+
+[sub_resource type="GDScript" id="GDScript_qa2ok"]
+resource_name = "ExtractorPlacementUI"
+script/source = "extends Polygon2D
+class_name ExtractorPlacementUI
+
+# Extractor type to be placed
+var type:String
+var typeData:ExtractorType = ExtractorType.new()
+
+# UI colors
+var innerGreen:Color = Color.hex(0x2f5e2bff)
+var innerRed:Color = Color.hex(0xe84938ff)
+var outerGreen:Color = Color.hex(0x2ee23469)
+var outerOrange:Color = Color.hex(0xe38b2d69)
+
+# Nodes
+var innerCube:Polygon2D
+var outerCube:Polygon2D
+var innerColl:Area2D
+var outerColl:Area2D
+
+# Collision checks
+var innerValid:bool = false
+var outerValid:bool = true
+
+# Bools that combine to check outerValid
+var isNotEncroaching:bool = true
+var isRightResNode:bool = true
+
+# Collision priority (Ascending)
+var collisionNames:Array[String]
+var regionPriority:Array[String] = [\"ocean\", \"barren\", \"plains\", \"forest\", \"mountains\", \"river\"]
+
+# Signal that is emitted when extractor is placed
+signal ready_to_place(extractor_position:Vector2, type:String)
+
+func checkRegion(regionName:String) -> bool:
+	var regionInArray = false
+	var regionIndex:int = -1
+	
+	# Get region priority
+	for i in range(regionPriority.size()):
+		if regionPriority[i] == regionName:
+			regionIndex = i
+	
+	# Check if region was found (fail check if not)
+	if regionIndex == -1:
+		print(\"Could not assess region priority of: \" + regionName)
+		return false
+	
+	# Make sure the desired region is in the array of colliders (fail check if not)
+	for i in range(collisionNames.size()):
+		if collisionNames[i] == regionName: regionInArray = true
+	if !regionInArray:
+		print(regionName + \" not found in array\")
+		return false
+	
+	# Make sure none of the higher-priority regions are in the array of colliders (fail check if found)
+	for i in range(regionIndex + 1, regionPriority.size()):
+		for j in range(collisionNames.size()):
+			if regionPriority[i] == collisionNames[j]:
+				print(regionPriority[i] + \" == \" + collisionNames[j])
+				print(regionName + \" superceded by \" + collisionNames[j])
+				return false
+	
+	# If no checks find a fault, return true
+	return true
+
+func setType(type:String):
+	self.type = type
+	typeData.setType(type)
+	return
+
+func _ready() -> void:
+	# Get nodes
+	innerCube = get_node(\"%Inner cube\")
+	outerCube = self
+	innerColl = get_node(\"%InnerCollision\")
+	outerColl = get_node(\"%OuterCollision\")
+	return
+
+func _process(delta: float) -> void:
+	self.position = get_global_mouse_position()
+	
+	# On left click, signal to place extractor then delete UI
+	if Input.is_action_just_pressed(\"LMB\"):
+		print(str(innerValid) + \" \" + str(outerValid))
+		if(innerValid && outerValid):
+			ready_to_place.emit(self.position, self.type)
+			self.queue_free()
+	
+	# On escape, delete UI
+	if Input.is_action_just_pressed(\"cancel\"):
+		self.queue_free()
+	return
+
+
+# When the correct regions are touched, placement is valid
+func _on_inner_collision_area_entered(area: Area2D) -> void:
+	print(\"Entered: \" + area.name)
+	# Add to array of colliders
+	collisionNames.append(area.name)
+	
+	if checkRegion(typeData.constructionRegion):
+		innerCube.color = innerGreen
+		innerValid = true
+	else:
+		innerCube.color = innerRed
+		innerValid = false
+	return
+
+func _on_inner_collision_area_exited(area: Area2D) -> void:
+	print(\"Exited: \" + area.name)
+	# Remove object name from array of colliders
+	for i in range(collisionNames.size()):
+		if(collisionNames[i] == area.name):
+			collisionNames.pop_at(i)
+			break
+	
+	if checkRegion(typeData.constructionRegion):
+		innerCube.color = innerGreen
+		innerValid = true
+	else:
+		innerCube.color = innerRed
+		innerValid = false
+	return
+
+
+# Outer collision - when not touching another extractor and when touching the correct resource node (when applicable), placement is valid
+func _on_outer_collision_area_entered(area: Area2D) -> void:
+	if !typeData.constructionResNode.is_empty():
+		if area.get_parent().get_meta(\"resource\") == typeData.constructionResNode:
+			isRightResNode = true
+
+	if(area.name == \"ExtractorColl\"):
+		isNotEncroaching = false
+	
+	if isNotEncroaching && isRightResNode:
+		outerCube.color = outerGreen
+		outerValid = true
+	else:
+		outerCube.color = outerOrange
+		outerValid = false
+	return
+
+func _on_outer_collision_area_exited(area: Area2D) -> void:
+	if !typeData.constructionResNode.is_empty():
+		if area.get_parent().get_meta(\"resource\") == typeData.constructionResNode:
+			isRightResNode = false
+	
+	if(area.name == \"ExtractorColl\"):
+		isNotEncroaching = true
+	
+	if isNotEncroaching && isRightResNode:
+		outerCube.color = outerGreen
+		outerValid = true
+	else:
+		outerCube.color = outerOrange
+		outerValid = false
+	return
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e3s0p"]
+size = Vector2(50, 50.4032)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d50dv"]
+size = Vector2(150, 150)
+
+[node name="ExtractorPlacementUI" type="Polygon2D"]
+color = Color(0.180392, 0.886275, 0.203922, 0.411765)
+polygon = PackedVector2Array(-75, -75, -75, 75, 75, 75, 75, -75)
+script = SubResource("GDScript_qa2ok")
+
+[node name="Inner cube" type="Polygon2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(1, 0.992)
+color = Color(0.184314, 0.368627, 0.168627, 1)
+polygon = PackedVector2Array(-25, -25, -25, 25, 25, 25, 25, -25)
+metadata/Type = ""
+metadata/Owner_ID = 0
+
+[node name="InnerCollision" type="Area2D" parent="Inner cube"]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Inner cube/InnerCollision"]
+visible = false
+shape = SubResource("RectangleShape2D_e3s0p")
+
+[node name="OuterCollision" type="Area2D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OuterCollision"]
+visible = false
+shape = SubResource("RectangleShape2D_d50dv")
+
+[connection signal="area_entered" from="Inner cube/InnerCollision" to="." method="_on_inner_collision_area_entered"]
+[connection signal="area_exited" from="Inner cube/InnerCollision" to="." method="_on_inner_collision_area_exited"]
+[connection signal="area_entered" from="OuterCollision" to="." method="_on_outer_collision_area_entered"]
+[connection signal="area_exited" from="OuterCollision" to="." method="_on_outer_collision_area_exited"]

@@ -13,7 +13,6 @@ var cities:Array
 var extractors:Array
 
 func _init() -> void:
-	print("init'd")
 	pass
 
 # DEBUG - check if the script was initialized

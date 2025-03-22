@@ -8,6 +8,7 @@
 [node name="GenericResourceNode" type="Node2D"]
 script = ExtResource("1_fp0ch")
 metadata/resource = "None"
+metadata/Extractor = ""
 
 [node name="Bananas RN" type="Sprite2D" parent="."]
 scale = Vector2(0.2, 0.2)

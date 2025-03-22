@@ -34,6 +34,10 @@ func canCombine(other:Resources) -> bool:
 		if (selfArray[i] + otherArray[i]) < 0: return false
 	return true
 
+func negate() -> Resources:
+	self.applyToAll(func negate(x:int): return -x)
+	return self
+
 func asArray() -> Array:
 	var resArray:Array[int]
 	resArray.append(money)

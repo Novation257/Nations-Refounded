@@ -37,7 +37,6 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("LMB"):
 		camera_starting_pos = position
 		mouse_starting_pos = get_viewport().get_mouse_position()
-		print(mouse_starting_pos)
 	# Update camera position based on mouse movement while clicked
 	elif Input.is_action_pressed("LMB"):
 		var mouse_curr_pos = get_viewport().get_mouse_position()
