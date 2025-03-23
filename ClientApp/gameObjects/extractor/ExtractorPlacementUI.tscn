@@ -79,6 +79,8 @@ func _ready() -> void:
 	outerCube = self
 	innerColl = get_node(\"%InnerCollision\")
 	outerColl = get_node(\"%OuterCollision\")
+	
+	position = Vector2(-5000, -5000) # Workaround for collision detection bug
 	return
 
 func _process(delta: float) -> void:
