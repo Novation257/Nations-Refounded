@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dywdkjpfrjy8r"]
+
+[ext_resource type="Script" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.gd" id="1_0ntc6"]
+
+[node name="InheritedCollision" type="Area2D"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 1, 0, 0, 1)
+script = ExtResource("1_0ntc6")

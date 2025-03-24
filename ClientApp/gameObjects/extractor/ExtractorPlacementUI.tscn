@@ -22,12 +22,18 @@ var innerColl:Area2D
 var outerColl:Area2D
 
 # Collision checks
-var innerValid:bool = false
+var innerValid:bool = true
 var outerValid:bool = true
 
 # Bools that combine to check outerValid
-var isNotEncroaching:bool = true
+var isNotEncroachingExtractor:bool = true
 var isRightResNode:bool = true
+
+# Bools that combine to check innerValid
+var isRightRegion:bool = true
+var isWithinCityLimits:bool = false
+var isNotEncroachingResNode:bool = true
+var isNotEncroachingCity:bool = true
 
 # Collision priority (Ascending)
 var collisionNames:Array[String]
@@ -54,15 +60,12 @@ func checkRegion(regionName:String) -> bool:
 	for i in range(collisionNames.size()):
 		if collisionNames[i] == regionName: regionInArray = true
 	if !regionInArray:
-		print(regionName + \" not found in array\")
 		return false
 	
 	# Make sure none of the higher-priority regions are in the array of colliders (fail check if found)
 	for i in range(regionIndex + 1, regionPriority.size()):
 		for j in range(collisionNames.size()):
 			if regionPriority[i] == collisionNames[j]:
-				print(regionPriority[i] + \" == \" + collisionNames[j])
-				print(regionName + \" superceded by \" + collisionNames[j])
 				return false
 	
 	# If no checks find a fault, return true
@@ -88,7 +91,6 @@ func _process(delta: float) -> void:
 	
 	# On left click, signal to place extractor then delete UI
 	if Input.is_action_just_pressed(\"LMB\"):
-		print(str(innerValid) + \" \" + str(outerValid))
 		if(innerValid && outerValid):
 			ready_to_place.emit(self.position, self.type)
 			self.queue_free()
@@ -101,11 +103,17 @@ func _process(delta: float) -> void:
 
 # When the correct regions are touched, placement is valid
 func _on_inner_collision_area_entered(area: Area2D) -> void:
-	print(\"Entered: \" + area.name)
-	# Add to array of colliders
-	collisionNames.append(area.name)
+	if(area.name == \"ResNodeColl\"): isNotEncroachingResNode = false
+	if(area.name == \"CityInnerColl\"): isNotEncroachingCity = false
+	if(area.name == \"CityLimitsColl\"): isWithinCityLimits = true
+	else: # Region - add to array of colliders
+		collisionNames.append(area.name) 
 	
-	if checkRegion(typeData.constructionRegion):
+		# Check to see if inner collider is in the correct region
+		if checkRegion(typeData.constructionRegion): isRightRegion = true
+		else: isRightRegion = false
+	
+	if(isNotEncroachingCity && isNotEncroachingResNode && isRightRegion && isWithinCityLimits):
 		innerCube.color = innerGreen
 		innerValid = true
 	else:
@@ -114,14 +122,19 @@ func _on_inner_collision_area_entered(area: Area2D) -> void:
 	return
 
 func _on_inner_collision_area_exited(area: Area2D) -> void:
-	print(\"Exited: \" + area.name)
-	# Remove object name from array of colliders
-	for i in range(collisionNames.size()):
-		if(collisionNames[i] == area.name):
-			collisionNames.pop_at(i)
-			break
+	if(area.name == \"ResNodeColl\"): isNotEncroachingResNode = true
+	if(area.name == \"CityInnerColl\"): isNotEncroachingCity = true
+	if(area.name == \"CityLimitsColl\"): isWithinCityLimits = false
+	else: # Region - remove region name from array of colliders
+		for i in range(collisionNames.size()):
+			if(collisionNames[i] == area.name):
+				collisionNames.pop_at(i)
+				break
 	
-	if checkRegion(typeData.constructionRegion):
+		if checkRegion(typeData.constructionRegion): innerValid = true
+		else: innerValid = false
+	
+	if(isNotEncroachingCity && isNotEncroachingResNode && isRightRegion && isWithinCityLimits):
 		innerCube.color = innerGreen
 		innerValid = true
 	else:
@@ -137,9 +150,9 @@ func _on_outer_collision_area_entered(area: Area2D) -> void:
 			isRightResNode = true
 
 	if(area.name == \"ExtractorColl\"):
-		isNotEncroaching = false
+		isNotEncroachingExtractor = false
 	
-	if isNotEncroaching && isRightResNode:
+	if isNotEncroachingExtractor && isRightResNode:
 		outerCube.color = outerGreen
 		outerValid = true
 	else:
@@ -153,9 +166,9 @@ func _on_outer_collision_area_exited(area: Area2D) -> void:
 			isRightResNode = false
 	
 	if(area.name == \"ExtractorColl\"):
-		isNotEncroaching = true
+		isNotEncroachingExtractor = true
 	
-	if isNotEncroaching && isRightResNode:
+	if isNotEncroachingExtractor && isRightResNode:
 		outerCube.color = outerGreen
 		outerValid = true
 	else:

@@ -14,10 +14,10 @@ metadata/Extractor = ""
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_5e3ej")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="ResNodeColl" type="Area2D" parent="."]
 scale = Vector2(1.25, 1.25)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ResNodeColl"]
 shape = SubResource("RectangleShape2D_70tww")
 
 [node name="UI" type="Panel" parent="."]
@@ -36,5 +36,5 @@ offset_right = 87.0
 offset_bottom = 28.0
 text = "RN_Name"
 
-[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
-[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="mouse_entered" from="ResNodeColl" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="ResNodeColl" to="." method="_on_area_2d_mouse_exited"]

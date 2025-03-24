@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckcd1m7hamj04"]
+
+[ext_resource type="Script" path="res://helperScenes/circlePoly/circlePolygon.gd" id="1_ovvhw"]
+
+[node name="CirclePoly" type="Polygon2D"]
+script = ExtResource("1_ovvhw")

@@ -1,0 +1,34 @@
+[gd_scene load_steps=7 format=3 uid="uid://j0optm68fl2t"]
+
+[ext_resource type="Script" path="res://gameObjects/city/city.gd" id="1_3kdso"]
+[ext_resource type="Texture2D" uid="uid://cv1gw87h4waa7" path="res://sprites/icon.svg" id="2_pjsk0"]
+[ext_resource type="PackedScene" uid="uid://ckcd1m7hamj04" path="res://helperScenes/circlePoly/CirclePoly.tscn" id="3_4ut7f"]
+[ext_resource type="PackedScene" uid="uid://dywdkjpfrjy8r" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.tscn" id="4_364bv"]
+[ext_resource type="PackedScene" uid="uid://eg3g7xxngiy5" path="res://helperScenes/PolyBorder/PolygonBorder.tscn" id="5_mc7sa"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plkby"]
+size = Vector2(130, 130)
+
+[node name="City" type="Node2D"]
+script = ExtResource("1_3kdso")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_pjsk0")
+
+[node name="CityInnerColl" type="Area2D" parent="."]
+scale = Vector2(0.6, 0.6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CityInnerColl"]
+shape = SubResource("RectangleShape2D_plkby")
+
+[node name="CityLimitsPoly" parent="." instance=ExtResource("3_4ut7f")]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
+color = Color(0.546, 0.91, 0.8736, 0.117647)
+
+[node name="CityLimitsColl" parent="CityLimitsPoly" instance=ExtResource("4_364bv")]
+
+[node name="PolygonBorder" parent="CityLimitsPoly" instance=ExtResource("5_mc7sa")]
+
+[connection signal="mouse_entered" from="CityLimitsPoly/CityLimitsColl" to="." method="_on_inherited_collision_mouse_entered"]

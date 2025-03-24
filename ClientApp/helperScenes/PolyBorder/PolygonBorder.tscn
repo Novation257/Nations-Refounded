@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://eg3g7xxngiy5"]
+
+[ext_resource type="Script" path="res://helperScenes/PolyBorder/polygonBorder.gd" id="1_5ec0y"]
+
+[node name="PolygonBorder" type="Line2D"]
+width = 0.75
+default_color = Color(0.29, 0.29, 0.29, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+script = ExtResource("1_5ec0y")
