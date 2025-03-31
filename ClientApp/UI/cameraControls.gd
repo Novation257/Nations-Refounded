@@ -18,10 +18,10 @@ func _input(event):
 	# Mouse inputs
 	if event is InputEventMouseButton:
 		# Scroll Up - zoom in
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP && !Input.is_action_pressed("Shift"): # TODO: change this in release version - hotfix for UI scroll lock for demo
 			change_zoom(1)
-		# Scrol Down - zoom out
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		# Scroll Down - zoom out
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN && !Input.is_action_pressed("Shift"):
 			change_zoom(-1)
 
 # Called when the node enters the scene tree for the first time.
@@ -45,5 +45,8 @@ func _process(delta: float) -> void:
 	# Camera movement via arrow keys
 	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (7.5 * 1/zoom[0])
 	
-		
-	pass
+	return
+
+func _on_build_menu_focus_entered() -> void:
+	print("entered")
+	pass # Replace with function body.

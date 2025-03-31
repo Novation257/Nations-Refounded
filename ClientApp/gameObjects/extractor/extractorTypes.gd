@@ -1,5 +1,9 @@
 class_name ExtractorType
 
+var typeName:String
+
+var _NUMTYPES:int = 20 # Incrament this if adding a new extractor type
+
 # Construction
 var constructionCost:Resources = Resources.new()
 var constructionTime:int = 3600
@@ -10,11 +14,14 @@ var constructionResNode:String = ""
 var inputs:Resources = Resources.new()
 var outputs:Resources = Resources.new()
 
+
 # Sets the input and output values for different extractors
-func setType(type:String) -> void:
+func setType(type:String) -> ExtractorType:
+	typeName = type
 	match type:
 		# Money factories
-		"Silver Mine":
+		"Silver Mine", "1":
+			typeName = "Silver Mine"
 			inputs.energy = 8
 			outputs.money = 20
 			constructionCost.money = 750
@@ -22,7 +29,8 @@ func setType(type:String) -> void:
 			constructionCost.composites = 100
 			constructionRegion = "mountains"
 			constructionResNode = "Silver"
-		"Gold Mine":
+		"Gold Mine", "2":
+			typeName = "Gold Mine"
 			inputs.energy = 8
 			outputs.money = 35
 			constructionCost.money = 750
@@ -32,13 +40,15 @@ func setType(type:String) -> void:
 			constructionResNode = "Gold"
 		
 		# Food factories
-		"Rice Farm":
+		"Rice Farm", "3":
+			typeName = "Rice Farm"
 			inputs.money = 7
 			outputs.food = 3
 			constructionCost.money = 750
 			constructionCost.building_materials = 300
 			constructionRegion = "plains"
-		"Dairy Farm":
+		"Dairy Farm", "4":
+			typeName = "Dairy Farm"
 			inputs.money = 4
 			inputs.energy = 7
 			outputs.food = 8
@@ -46,7 +56,8 @@ func setType(type:String) -> void:
 			constructionCost.building_materials = 250
 			constructionRegion = "plains"
 			constructionResNode = "Cattle"
-		"Fishery":
+		"Fishery", "5":
+			typeName = "Fishery"
 			inputs.money = 3
 			inputs.energy = 6
 			outputs.food = 7
@@ -54,7 +65,8 @@ func setType(type:String) -> void:
 			constructionCost.building_materials = 250
 			constructionRegion = "ocean"
 			constructionResNode = "Fish"
-		"Banana Plantation":
+		"Banana Plantation", "6":
+			typeName = "Banana Plantation"
 			inputs.money = 3
 			inputs.energy = 6
 			outputs.food = 7
@@ -64,20 +76,23 @@ func setType(type:String) -> void:
 			constructionResNode = "Bananas"
 		
 		# Power factories
-		"Wind Turbine":
+		"Wind Turbine", "7":
+			typeName = "Wind Turbine"
 			inputs.money = 6
 			outputs.energy = 6
 			constructionCost.money = 350
 			constructionCost.building_materials = 150
 			constructionRegion = "barren"
-		"Hydroelectric Dam":
+		"Hydroelectric Dam", "8":
+			typeName = "Hydroelectric Dam"
 			inputs.money = 9
 			outputs.energy = 16
 			constructionCost.money = 500
 			constructionCost.building_materials = 300
 			constructionCost.composites = 75
 			constructionRegion = "river"
-		"Coal Power Plant":
+		"Coal Power Plant", "9":
+			typeName = "Coal Power Plant"
 			inputs.money = 11
 			outputs.energy = 24
 			constructionCost.money = 600
@@ -87,19 +102,22 @@ func setType(type:String) -> void:
 			constructionResNode = "Coal"
 		
 		# Building materials factories
-		"Sawmill":
+		"Sawmill", "10":
+			typeName = "Sawmill"
 			inputs.money = 4
 			inputs.energy = 7
 			outputs.building_materials = 4
 			constructionCost.money = 950
 			constructionRegion = "forest"
-		"Quarry":
+		"Quarry", "11":
+			typeName = "Quarry"
 			inputs.money = 4
 			inputs.energy = 7
 			outputs.building_materials = 4
 			constructionCost.money = 950
 			constructionRegion = "mountains"
-		"Concrete Factory":
+		"Concrete Factory", "12":
+			typeName = "Concrete Factory"
 			inputs.money = 5
 			inputs.energy = 10
 			outputs.building_materials = 9
@@ -107,7 +125,8 @@ func setType(type:String) -> void:
 			constructionCost.building_materials = 500
 			constructionCost.composites = 250
 			constructionRegion = "barren"
-		"Stonemason":
+		"Stonemason", "13":
+			typeName = "Stonemason"
 			inputs.money = 5
 			inputs.energy = 10
 			outputs.building_materials = 5
@@ -119,13 +138,15 @@ func setType(type:String) -> void:
 			constructionResNode = "Marble"
 		
 		# Consumer goods factories
-		"Chocolate Factory":
-			inputs.energy = 3
-			inputs.power = 5
+		"Chocolate Factory", "14":
+			typeName = "Chocolate Factory"
+			inputs.money = 3
+			inputs.energy = 5
 			outputs.consumer_goods = 2
 			constructionRegion = "forest"
 			constructionResNode = "Cocoa"
-		"Clothing Factory":
+		"Clothing Factory", "15":
+			typeName = "Clothing Factory"
 			inputs.money = 4
 			inputs.energy = 7
 			outputs.consumer_goods = 2
@@ -134,7 +155,8 @@ func setType(type:String) -> void:
 			constructionCost.composites = 75
 			constructionRegion = "plains"
 			constructionResNode = "Sheep"
-		"Tobacco Plantation":
+		"Tobacco Plantation", "16":
+			typeName = "Tobacco Plantation"
 			inputs.money = 4
 			inputs.energy = 7
 			outputs.consumer_goods = 4
@@ -143,7 +165,8 @@ func setType(type:String) -> void:
 			constructionCost.composites = 175
 			constructionRegion = "forest"
 			constructionResNode = "Tobacco"
-		"Phone Factory":
+		"Phone Factory", "17":
+			typeName = "Phone Factory"
 			inputs.money = 8
 			inputs.energy = 12
 			inputs.composites = 3
@@ -154,7 +177,8 @@ func setType(type:String) -> void:
 			constructionRegion = "barren"
 		
 		# Composites factories
-		"Aluminum Refinery":
+		"Aluminum Refinery", "18":
+			typeName = "Aluminum Refinery"
 			inputs.money = 6
 			inputs.energy = 11
 			outputs.composites = 2
@@ -162,7 +186,8 @@ func setType(type:String) -> void:
 			constructionCost.building_materials = 525
 			constructionRegion = "mountains"
 			constructionResNode = "Bauxite"
-		"Advanced Materials Facility":
+		"Advanced Materials Facility", "19":
+			typeName = "Advanced Materials Facility"
 			inputs.money = 5
 			inputs.energy = 10
 			inputs.building_materials = 5
@@ -170,7 +195,8 @@ func setType(type:String) -> void:
 			constructionCost.money = 1200
 			constructionCost.building_materials = 600
 			constructionRegion = "mountains"
-		"Platinum Mine":
+		"Platinum Mine", "20":
+			typeName = "Platinum Mine"
 			inputs.money = 8
 			inputs.energy = 15
 			outputs.composites = 4
@@ -178,4 +204,15 @@ func setType(type:String) -> void:
 			constructionCost.building_materials = 750
 			constructionRegion = "mountains"
 			constructionResNode = "Platinum"
+		_:
+			print("Unable to match extractorType " + type)
 	return
+
+func all() -> Array[ExtractorType]:
+	var returnArray: Array[ExtractorType]
+	
+	for i in range(1, _NUMTYPES+1): 
+		var newEx = ExtractorType.new()
+		newEx.setType(str(i))
+		returnArray.append(newEx)
+	return returnArray

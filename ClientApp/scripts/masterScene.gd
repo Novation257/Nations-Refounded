@@ -11,6 +11,9 @@ var BMUI:Label
 var CGUI:Label
 var CompositesUI:Label
 
+var staticUI:StaticUI
+var buildMenu:ScrollContainer
+
 # Process flags
 var placingExtractor:bool = false
 
@@ -42,6 +45,19 @@ func check_extractor_collection(extractors:Array[Node]) -> void:
 				print("Not enough resources to collect from " + extractor.name)
 				extractor.get_stored().print()
 
+func update_build_buttons() -> void:
+	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
+		var cost:Resources = Resources.new()
+		cost.combine(extractorPanel.buildable.constructionCost)
+		cost.negate()
+		if(curr_player.resources.canCombine(cost)):
+			extractorPanel.buildButton.text = "Build"
+			extractorPanel.buildButton.disabled = false
+		else:
+			extractorPanel.buildButton.text = "Insufficient Materials"
+			extractorPanel.buildButton.disabled = true
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Initialize player
@@ -59,9 +75,15 @@ func _ready() -> void:
 	CGUI = get_node("%camera+static ui/%CG Number")
 	CompositesUI = get_node("%camera+static ui/%Composites Number")
 	
-	# Connect all 
+	staticUI = get_node("%camera+static ui/%UI")
+	buildMenu = staticUI.get_node("%BuildMenu")
+	
+	# Connect all signals from child nodes to this script
 	for rn in get_node("%Res Nodes").get_children():
 		rn.node_clicked.connect(_on_res_node_clicked)
+	
+	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
+		extractorPanel.build_button_clicked.connect(_on_build_button_pressed)
 	
 	return
 
@@ -89,6 +111,9 @@ func _process(delta: float) -> void:
 	# Extractor clicked - collect stockpiled resources
 	check_extractor_collection(extractors)
 	
+	# Update build menu
+	update_build_buttons()
+	
 	# Run input routines if button is pressed
 	if Input.is_action_just_pressed("debug1"):
 		placeRecourceExtractor("Rice Farm")
@@ -96,6 +121,8 @@ func _process(delta: float) -> void:
 		placeRecourceExtractor("Wind Turbine")
 	if Input.is_action_just_pressed("debug3"):
 		placeRecourceExtractor("Dairy Farm")
+	if Input.is_action_just_pressed("BuildMenuToggle"):
+		staticUI.toggleBuildMenu()
 	
 	# Update UI
 	update_ui()
@@ -119,4 +146,8 @@ func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	pass
 
 func _on_res_node_clicked(extractor:String) -> void:
+	placeRecourceExtractor(extractor)
+
+func _on_build_button_pressed(extractor:String) -> void:
+	buildMenu.visible = false
 	placeRecourceExtractor(extractor)
