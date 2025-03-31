@@ -81,10 +81,11 @@ func _ready() -> void:
 	# Connect all signals from child nodes to this script
 	for rn in get_node("%Res Nodes").get_children():
 		rn.node_clicked.connect(_on_res_node_clicked)
-	
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
 		extractorPanel.build_button_clicked.connect(_on_build_button_pressed)
 	
+	# Hide build menu
+	buildMenu.visible = false
 	return
 
 func update_ui() -> void:

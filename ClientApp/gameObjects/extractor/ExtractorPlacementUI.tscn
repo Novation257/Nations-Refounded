@@ -131,8 +131,9 @@ func _on_inner_collision_area_exited(area: Area2D) -> void:
 				collisionNames.pop_at(i)
 				break
 	
-		if checkRegion(typeData.constructionRegion): innerValid = true
-		else: innerValid = false
+		# Check to see if inner collider is in the correct region
+		if checkRegion(typeData.constructionRegion): isRightRegion = true
+		else: isRightRegion = false
 	
 	if(isNotEncroachingCity && isNotEncroachingResNode && isRightRegion && isWithinCityLimits):
 		innerCube.color = innerGreen
