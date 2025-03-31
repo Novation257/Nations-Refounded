@@ -18,15 +18,10 @@ signal taxes_collected(taxes:int)
 
 # Population constants
 var initialPopulation:int = 1000
-var maxPopulation:int = 1000000
+var maxPopulation:int = 500000
 var growthRate:float = .02 
 var timeExp:float = .75
 var timeMul:float = 4
-
-# Production/consumption constants
-var TPP:float = .035   # 35 per 1000 pop
-var FPP:float = .025   # 25 per 1000 pop
-var CGPP:float = .010 # 10 per 1000 pop (when pop is over 100,000)
 
 # Nodes
 var cityLimits:Polygon2D
@@ -37,6 +32,15 @@ var productionTime:int = 1800 # 30 minutes
 var productionCountdown:int = productionTime
 var stockpile:int = 0
 var inputs:Resources = Resources.new()
+
+func calculateFoodUsage(population:int) -> int:
+	return floor((population * .001) - .00006*pow(population, 1.2) + 5)
+
+func calculateCGUsage(population:int) -> int:
+	return floor(calculateFoodUsage(population) * .25)
+
+func calculateTaxProduction(population:int) -> int:
+	return floor(calculateFoodUsage(population) * 3.5)
 
 func growPopulation(modifier:float) -> void:
 	population += (growthRate * population)* max(0, 1-(population/maxPopulation)) * modifier
@@ -57,13 +61,13 @@ func doProductionTick(time:int) -> void:
 		cityLimits.scale[1] = cityLimits.scale[0]
 		
 		# Update inputs
-		inputs.food = floor(FPP * population)
-		if (population > 100000): inputs.consumer_goods = floor(CGPP * population)
+		inputs.food = calculateFoodUsage(population)
+		if (population > 100000): inputs.consumer_goods = calculateCGUsage(population)
 		else: inputs.consumer_goods = 0
 	
 	# Update UI
 	UI_population.text = "Population: " + str(get_meta("population"))
-	UI_stockpile.text = "Taxes: " + str(floor(TPP * population * stockpile))
+	UI_stockpile.text = "Taxes: " + str(calculateTaxProduction(population) * stockpile)
 	UI_TTP.text = "TTP: " + str(productionCountdown)
 	return
 
@@ -98,8 +102,8 @@ func _ready() -> void:
 	population = get_meta("population")
 	
 	# Update inputs
-	inputs.food = floor(FPP * population)
-	if (population > 100000): inputs.consumer_goods = floor(CGPP * population)
+	inputs.food = calculateFoodUsage(population)
+	if (population > 100000): inputs.consumer_goods = calculateCGUsage(population)
 	else: inputs.consumer_goods = 0
 	pass
 
@@ -124,7 +128,7 @@ func _on_city_inner_coll_input_event(viewport: Node, event: InputEvent, shape_id
 	if(Input.is_action_just_pressed("LMB")):
 		print("City clicked")
 		# Send taxes to masterScene and empty stockpile
-		taxes_collected.emit(floor(TPP * population * stockpile))
+		taxes_collected.emit(calculateTaxProduction(population) * stockpile)
 		stockpile = 0
 		
 		# Update UI

@@ -1,5 +1,6 @@
 extends Node2D
 
+const TIMEMUL:int = 3600/4 # 1 sec = 15 min
 var time:int
 var curr_player:Player
 
@@ -60,9 +61,9 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 10000
+	curr_player.resources.money = 15000
 	curr_player.resources.food = 5000
-	curr_player.resources.building_materials = 1000
+	curr_player.resources.building_materials = 5000
 	
 	# Get UI nodes
 	moneyUI = get_node("%camera+static ui/%Money Number")
@@ -109,9 +110,9 @@ func _process(delta: float) -> void:
 		
 		# Update buildables
 		for extractor in extractors:
-			extractor.doProductionTick(360)
+			extractor.doProductionTick(TIMEMUL)
 		for city:City in cities:
-			city.doProductionTick(360)
+			city.doProductionTick(TIMEMUL)
 	
 	# Extractor clicked - collect stockpiled resources
 	check_extractor_collection(extractors)
