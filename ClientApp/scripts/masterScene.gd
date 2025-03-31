@@ -47,10 +47,7 @@ func check_extractor_collection(extractors:Array[Node]) -> void:
 
 func update_build_buttons() -> void:
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
-		var cost:Resources = Resources.new()
-		cost.combine(extractorPanel.buildable.constructionCost)
-		cost.negate()
-		if(curr_player.resources.canCombine(cost)):
+		if(curr_player.resources.canCombine(extractorPanel.buildable.constructionCost.negateNoMod())):
 			extractorPanel.buildButton.text = "Build"
 			extractorPanel.buildButton.disabled = false
 		else:
@@ -83,6 +80,9 @@ func _ready() -> void:
 		rn.node_clicked.connect(_on_res_node_clicked)
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
 		extractorPanel.build_button_clicked.connect(_on_build_button_pressed)
+	for city:City in get_node("%Cities").get_children():
+		city.taxes_collected.connect(_on_taxes_collected)
+		city.production_tick.connect(_on_city_production_tick)
 	
 	# Hide build menu
 	buildMenu.visible = false
@@ -100,14 +100,18 @@ func update_ui() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var extractors = get_node("%Extractors").get_children()
+	var cities = get_node("%Cities").get_children()
+	
 	# Update time and time-based events
 	if(time != Time.get_ticks_msec() / 1000):
 		time = Time.get_ticks_msec() / 1000
 		#print(time)
 		
-		# Update extractors
+		# Update buildables
 		for extractor in extractors:
 			extractor.doProductionTick(360)
+		for city:City in cities:
+			city.doProductionTick(360)
 	
 	# Extractor clicked - collect stockpiled resources
 	check_extractor_collection(extractors)
@@ -143,12 +147,50 @@ func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	get_node("%Extractors").add_child(newEx)
 	
 	# Subtract extractor construction cost from the player's resources
-	curr_player.resources.combine(newEx.exStats.constructionCost.negate())
+	curr_player.resources.combine(newEx.exStats.constructionCost.negateNoMod())
+	pass
+
+func _on_city_placed(city_position:Vector2) -> void:
+	# Load resource and instanciate
+	var newCityRes:Resource = load("res://gameObjects/city/city.tscn")
+	var newCity:City = newCityRes.instantiate()
+	
+	# Set extractor variables and metadata
+	newCity.set_meta("ownerID", curr_player.id)
+	newCity.position = get_global_mouse_position() #TODO: change to pioneer's position
+	
+	# Add to cities node and connect production signal
+	get_node("%Cities").add_child(newCity)
+	newCity.production_tick.connect(_on_city_production_tick)
+	
+	# TODO: delete pioneer unit
 	pass
 
 func _on_res_node_clicked(extractor:String) -> void:
 	placeRecourceExtractor(extractor)
 
 func _on_build_button_pressed(extractor:String) -> void:
-	buildMenu.visible = false
+	staticUI.toggleBuildMenu()
 	placeRecourceExtractor(extractor)
+
+func _on_city_production_tick(city:City) -> void:
+	if (city.get_meta("ownerID") != curr_player.id): pass
+	var resourceCheck:int = city.checkResources(curr_player.resources)
+	if (resourceCheck == 0): # Normal production
+		if (city.stockpile < 18): city.stockpile += 1
+		city.growPopulation(1)
+		curr_player.resources.combine(city.inputs.negateNoMod())
+	elif (resourceCheck == 3): # City starving AND no consumer goods - no tax production, shrink population
+		city.growPopulation(-0.1)
+	elif (resourceCheck == 1): # City starving - no tax production, shrink population, consume CG
+		city.growPopulation(-0.1)
+		curr_player.resources.consumer_goods -= city.inputs.consumer_goods
+	elif (resourceCheck == 2): # No consumer goods - less tax production, less population growth, consume food
+		if (city.stockpile >= 18): city.stockpile += 0.5
+		city.growPopulation(0.5)
+		curr_player.resources.food -= city.inputs.food
+	return
+
+func _on_taxes_collected(taxes:int) -> void:
+	curr_player.resources.money += taxes
+	return

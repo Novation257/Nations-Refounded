@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8witt57rpqyq"]
+[gd_scene load_steps=4 format=3 uid="uid://b8witt57rpqyq"]
+
+[ext_resource type="PackedScene" uid="uid://dywdkjpfrjy8r" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.tscn" id="1_4243g"]
 
 [sub_resource type="GDScript" id="GDScript_4xwks"]
 script/source = "extends Polygon2D
@@ -95,21 +97,20 @@ func _process(delta: float) -> void:
 
 
 # Show/hide UI if mouse is hoving over extractor
-func _on_area_2d_mouse_entered() -> void:
+func _on_inherited_collision_mouse_entered() -> void:
 	UI.visible = true
 	return
 
-func _on_area_2d_mouse_exited() -> void:
+func _on_inherited_collision_mouse_exited() -> void:
 	UI.visible = false
 	return
 
-# On left click - collect resources
-func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+
+func _on_inherited_collision_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if(Input.is_action_just_pressed(\"LMB\")):
 		#print(name + \" clicked\")
 		clicked = true
 	else: clicked = false
-	return
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x1knm"]
@@ -127,6 +128,8 @@ metadata/Type = ""
 scale = Vector2(1, 0.992)
 color = Color(0.2623, 0.3741, 0.43, 1)
 polygon = PackedVector2Array(-25, -25, -25, 25, 25, 25, 25, -25)
+
+[node name="InheritedCollision" parent="Extractor Cube" instance=ExtResource("1_4243g")]
 
 [node name="ExtractorColl" type="Area2D" parent="."]
 
@@ -196,6 +199,9 @@ offset_bottom = 23.0
 text = "TTP: 12"
 metadata/_edit_use_anchors_ = true
 
+[connection signal="input_event" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_input_event"]
+[connection signal="mouse_entered" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_mouse_entered"]
+[connection signal="mouse_exited" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_mouse_exited"]
 [connection signal="input_event" from="ExtractorColl" to="." method="_on_area_2d_input_event"]
 [connection signal="mouse_entered" from="ExtractorColl" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="mouse_exited" from="ExtractorColl" to="." method="_on_area_2d_mouse_exited"]

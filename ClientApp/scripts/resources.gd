@@ -38,6 +38,13 @@ func negate() -> Resources:
 	self.applyToAll(func negate(x:int): return -x)
 	return self
 
+# Same as negate, but doesn't change original data
+func negateNoMod() -> Resources:
+	var tempRes = Resources.new()
+	tempRes.combine(self)
+	tempRes.applyToAll(func negate(x:int): return -x)
+	return tempRes
+
 func asArray() -> Array:
 	var resArray:Array[int]
 	resArray.append(money)

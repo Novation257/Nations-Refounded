@@ -1,7 +1,20 @@
 extends Node2D
 class_name City
 
-var scaleMod:float = .005
+# Identifiers
+var id:int
+
+# UI
+var UI:Panel
+var UI_name:Label
+var UI_ownerID:Label
+var UI_population:Label
+var UI_stockpile:Label
+var UI_TTP:Label
+
+# Signaling
+signal production_tick(city:City)
+signal taxes_collected(taxes:int)
 
 # Population constants
 var initialPopulation:int = 1000
@@ -11,9 +24,9 @@ var timeExp:float = .75
 var timeMul:float = 4
 
 # Production/consumption constants
-var TPP:float = .4   # 400 per 1000 pop
-var FPP:float = .1   # 100 per 1000 pop
-var CGPP:float = .05 # 50 per 1000 pop (when pop is over 100,000)
+var TPP:float = .035   # 35 per 1000 pop
+var FPP:float = .025   # 25 per 1000 pop
+var CGPP:float = .010 # 10 per 1000 pop (when pop is over 100,000)
 
 # Nodes
 var cityLimits:Polygon2D
@@ -23,43 +36,97 @@ var population:int = initialPopulation
 var productionTime:int = 1800 # 30 minutes
 var productionCountdown:int = productionTime
 var stockpile:int = 0
-var production:Resources = Resources.new()
-
-# Signal
-signal production_tick(city:City)
+var inputs:Resources = Resources.new()
 
 func growPopulation(modifier:float) -> void:
 	population += (growthRate * population)* max(0, 1-(population/maxPopulation)) * modifier
+	set_meta("population", population)
 
 # Add production to the extractor and increase stockpile when necessary
 func doProductionTick(time:int) -> void:
 	#print("Doing tick on extractor:" + name)
 	productionCountdown -= time
 	if(productionCountdown <= 0): # Production cycle completed
+		print("done!")
+		production_tick.emit(self)
 		stockpile += 1
 		productionCountdown = productionTime + productionCountdown
+		
+		# Update City limits - log scale giving values between 2 and 4.5
+		cityLimits.scale[0] = max(2, (0.5 * log(population) / log(10) - 0.5) + 1)
+		cityLimits.scale[1] = cityLimits.scale[0]
+		
+		# Update inputs
+		inputs.food = floor(FPP * population)
+		if (population > 100000): inputs.consumer_goods = floor(CGPP * population)
+		else: inputs.consumer_goods = 0
+	
+	# Update UI
+	UI_population.text = "Population: " + str(get_meta("population"))
+	UI_stockpile.text = "Taxes: " + str(floor(TPP * population * stockpile))
+	UI_TTP.text = "TTP: " + str(productionCountdown)
 	return
 
 # Check if the player has enough resources to supply the city
-func checkResources(cityConsumption:Resources, playerResources:Resources) -> int:
+func checkResources(playerResources:Resources) -> int:
 	var temp:Resources = Resources.new()
-	temp.combine(cityConsumption)
-	temp.negate()
+	temp.combine(self.inputs.negateNoMod())
 	temp.combine(playerResources)
+	if temp.food < 0 && temp.consumer_goods < 0: return 3
 	if temp.food < 0: return 1
 	if temp.consumer_goods < 0: return 2
 	else: return 0
 
 func _ready() -> void:
+	# Get UI nodes
+	UI = get_node("%UI")
+	UI_name = get_node("%name")
+	UI_ownerID = get_node("%ownerID")
+	UI_population = get_node("%population")
+	UI_stockpile = get_node("%stockpile")
+	UI_TTP = get_node("%TTP")
+	
 	cityLimits = get_node("%CityLimitsPoly")
+	
+	
+	# Hide UI and update values
+	UI.visible = false
+	UI_name.text = name
+	UI_ownerID.text = "OwnerID: " + str(get_meta("ownerID"))
+	
+	# Get population
+	population = get_meta("population")
+	
+	# Update inputs
+	inputs.food = floor(FPP * population)
+	if (population > 100000): inputs.consumer_goods = floor(CGPP * population)
+	else: inputs.consumer_goods = 0
 	pass
 
 func _process(delta: float) -> void:
-	#cityLimits.scale[0] += scaleMod
-	#cityLimits.scale[1] = cityLimits.scale[0]
-	#if(cityLimits.scale[0] >= 4 || cityLimits.scale[0] <= 2): scaleMod *= -1
+	# Make UI follow cursor if the UI isn't hidden
+	if UI.visible == true:
+		var m_pos:Vector2 = get_local_mouse_position()
+		UI.position[0] = m_pos[0] + 10
+		UI.position[1] = m_pos[1] + 0
 	pass
 
+func _on_city_inner_coll_mouse_entered() -> void:
+	UI.visible = true
+	return
 
-func _on_inherited_collision_mouse_entered() -> void:
-	pass # Replace with function body.
+func _on_city_inner_coll_mouse_exited() -> void:
+	UI.visible = false
+	return
+
+# On left click - collect taxes
+func _on_city_inner_coll_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if(Input.is_action_just_pressed("LMB")):
+		print("City clicked")
+		# Send taxes to masterScene and empty stockpile
+		taxes_collected.emit(floor(TPP * population * stockpile))
+		stockpile = 0
+		
+		# Update UI
+		UI_stockpile.text = "Taxes: 0"
+	return
