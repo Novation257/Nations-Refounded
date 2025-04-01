@@ -30,14 +30,14 @@ var cityLimits:Polygon2D
 var population:int = initialPopulation
 var productionTime:int = 1800 # 30 minutes
 var productionCountdown:int = productionTime
-var stockpile:int = 0
+var stockpile:float = 0
 var inputs:Resources = Resources.new()
 
 func calculateFoodUsage(population:int) -> int:
 	return floor((population * .001) - .00006*pow(population, 1.2) + 5)
 
 func calculateCGUsage(population:int) -> int:
-	return floor(calculateFoodUsage(population) * .25)
+	return floor(calculateFoodUsage(population) * .10)
 
 func calculateTaxProduction(population:int) -> int:
 	return floor(calculateFoodUsage(population) * 3.5)
@@ -51,13 +51,11 @@ func doProductionTick(time:int) -> void:
 	#print("Doing tick on extractor:" + name)
 	productionCountdown -= time
 	if(productionCountdown <= 0): # Production cycle completed
-		print("done!")
 		production_tick.emit(self)
-		stockpile += 1
 		productionCountdown = productionTime + productionCountdown
 		
-		# Update City limits - log scale giving values between 2 and 4.5
-		cityLimits.scale[0] = max(2, (0.5 * log(population) / log(10) - 0.5) + 1)
+		# Update City limits - log scale giving values between ~2 and ~4.5
+		cityLimits.scale[0] = max(2, (0.69 * log(population) / log(10) - 0.19) + 1)
 		cityLimits.scale[1] = cityLimits.scale[0]
 		
 		# Update inputs

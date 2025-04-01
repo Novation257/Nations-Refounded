@@ -61,9 +61,12 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 15000
-	curr_player.resources.food = 5000
-	curr_player.resources.building_materials = 5000
+	curr_player.resources.money = 22000 # 15000 before demo
+	curr_player.resources.food = 13000 # 5000 before demo
+	curr_player.resources.building_materials = 9000 # 5000 before demo
+	curr_player.resources.energy = 7000 # 0 before demo
+	curr_player.resources.consumer_goods = 4000 # 0 before demo
+	curr_player.resources.composites = 600 # 0 before demo
 	
 	# Get UI nodes
 	moneyUI = get_node("%camera+static ui/%Money Number")
@@ -141,7 +144,7 @@ func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	# Set extractor variables and metadata
 	newEx.name = str(get_node("%Extractors").get_child_count(false)) + type
 	newEx.set_meta("ownerID", curr_player.id)
-	newEx.set_meta("type", type)
+	newEx.set_meta("Type", type)
 	newEx.position = get_global_mouse_position()
 	
 	# Add to extractors node
@@ -178,7 +181,7 @@ func _on_city_production_tick(city:City) -> void:
 	if (city.get_meta("ownerID") != curr_player.id): pass
 	var resourceCheck:int = city.checkResources(curr_player.resources)
 	if (resourceCheck == 0): # Normal production
-		if (city.stockpile < 18): city.stockpile += 1
+		if (city.stockpile < 18*2): city.stockpile += 1
 		city.growPopulation(1)
 		curr_player.resources.combine(city.inputs.negateNoMod())
 	elif (resourceCheck == 3): # City starving AND no consumer goods - no tax production, shrink population
@@ -187,7 +190,7 @@ func _on_city_production_tick(city:City) -> void:
 		city.growPopulation(-0.1)
 		curr_player.resources.consumer_goods -= city.inputs.consumer_goods
 	elif (resourceCheck == 2): # No consumer goods - less tax production, less population growth, consume food
-		if (city.stockpile >= 18): city.stockpile += 0.5
+		if (city.stockpile >= 18*2): city.stockpile += 0.5
 		city.growPopulation(0.5)
 		curr_player.resources.food -= city.inputs.food
 	return

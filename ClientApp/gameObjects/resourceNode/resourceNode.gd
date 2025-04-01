@@ -30,6 +30,7 @@ func _process(delta: float) -> void:
 		# Emit signal if clicked
 		if Input.is_action_just_pressed("LMB"):
 			print("Clicked " + self.name)
+			print("Emitting: " + get_meta("Extractor"))
 			node_clicked.emit(get_meta("Extractor"))
 	pass
 
