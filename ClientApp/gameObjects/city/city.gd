@@ -5,6 +5,7 @@ class_name City
 var id:int
 
 # UI
+var Camera:Camera2D
 var UI:Panel
 var UI_name:Label
 var UI_ownerID:Label
@@ -81,6 +82,7 @@ func checkResources(playerResources:Resources) -> int:
 
 func _ready() -> void:
 	# Get UI nodes
+	Camera = get_parent().get_parent().get_node("%camera+static ui")
 	UI = get_node("%UI")
 	UI_name = get_node("%name")
 	UI_ownerID = get_node("%ownerID")
@@ -109,7 +111,7 @@ func _process(delta: float) -> void:
 	# Make UI follow cursor if the UI isn't hidden
 	if UI.visible == true:
 		# Update scale
-		UI.scale[0] = 1/get_node("%camera+static ui").zoom[0]
+		UI.scale[0] = 1/Camera.zoom[0]
 		UI.scale[1] = UI.scale[0]
 		
 		# Update position

@@ -10,6 +10,7 @@ class_name Extractor
 var id:int
 
 # UI
+var Camera:Camera2D
 var UI:Panel
 var UI_type:Label
 var UI_ownerID:Label
@@ -71,6 +72,7 @@ func _ready() -> void:
 	exStats.setType(get_meta(\"Type\"))
 	
 	# Get UI nodes
+	Camera = get_parent().get_parent().get_node(\"%camera+static ui\")
 	UI = get_node(\"%UI\")
 	UI_type = get_node(\"%type\")
 	UI_ownerID = get_node(\"%ownerID\")
@@ -85,10 +87,11 @@ func _ready() -> void:
 	return
 
 func _process(delta: float) -> void:
+	ready
 	# Make UI follow cursor if the UI isn't hidden
 	if UI.visible == true:
 		# Update scale
-		UI.scale[0] = 1/get_node(\"%camera+static ui\").zoom[0]
+		UI.scale[0] = 1/Camera.zoom[0]
 		UI.scale[1] = UI.scale[0]
 		
 		# Update position

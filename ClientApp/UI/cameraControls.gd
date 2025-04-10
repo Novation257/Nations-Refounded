@@ -1,5 +1,6 @@
 extends Camera2D
 
+var zoom_target := zoom[0]
 var zoom_sensitivity:float = .1
 var zoom_limits:Vector2 = Vector2(.75,5)
 var mouse_starting_pos: Vector2 = Vector2(0,0)
@@ -8,10 +9,9 @@ var camera_starting_pos: Vector2 = Vector2(0,0)
 # Changes zoom based on sensitivity and direction
 # Will keep zoom's value between specified limits
 func change_zoom(direction:int) -> void:
-	zoom[0] *= 1+ (direction*zoom_sensitivity)
-	zoom[0] = max(zoom_limits[0], zoom[0])
-	zoom[0] = min(zoom_limits[1], zoom[0])
-	zoom[1] = zoom[0]
+	zoom_target *= 1 + (direction*zoom_sensitivity)
+	zoom_target = max(zoom_limits[0], zoom_target)
+	zoom_target = min(zoom_limits[1], zoom_target)
 
 # Handles scroll wheel inputs
 func _input(event):
@@ -31,6 +31,14 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Zoom smoothing
+	var old_mpos = get_global_mouse_position()
+	zoom = lerp(zoom, Vector2(zoom_target, zoom_target), .175)
+	var new_mpos = get_global_mouse_position()
+	
+	# Panning "momentum"
+	if abs(zoom[0] - zoom_target) < .00005:
+		self.position += 1 * (new_mpos - old_mpos)
 	
 	# Camera movement via mouse
 	# At start of click, get mouse and camera position
@@ -43,7 +51,7 @@ func _process(delta: float) -> void:
 		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
 	
 	# Camera movement via arrow keys
-	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (7.5 * 1/zoom[0])
+	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (30 * 1/zoom[0])
 	
 	return
 

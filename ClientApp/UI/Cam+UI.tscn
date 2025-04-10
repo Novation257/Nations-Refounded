@@ -8,6 +8,8 @@ limit_left = -5000
 limit_top = -5000
 limit_right = 5000
 limit_bottom = 5000
+position_smoothing_enabled = true
+position_smoothing_speed = 20.0
 script = ExtResource("1_0pqkt")
 
 [node name="UI" type="CanvasLayer" parent="."]
