@@ -35,6 +35,9 @@ var isWithinCityLimits:bool = false
 var isNotEncroachingResNode:bool = true
 var isNotEncroachingCity:bool = true
 
+# Count encroaching extractors
+var encroachingExtractorsCount:int = 0
+
 # Collision priority (Ascending)
 var collisionNames:Array[String]
 var regionPriority:Array[String] = [\"ocean\", \"barren\", \"plains\", \"forest\", \"mountains\", \"river\"]
@@ -151,7 +154,8 @@ func _on_outer_collision_area_entered(area: Area2D) -> void:
 			isRightResNode = true
 
 	if(area.name == \"ExtractorColl\"):
-		isNotEncroachingExtractor = false
+		encroachingExtractorsCount += 1
+		isNotEncroachingExtractor = !encroachingExtractorsCount
 	
 	if isNotEncroachingExtractor && isRightResNode:
 		outerCube.color = outerGreen
@@ -167,7 +171,8 @@ func _on_outer_collision_area_exited(area: Area2D) -> void:
 			isRightResNode = false
 	
 	if(area.name == \"ExtractorColl\"):
-		isNotEncroachingExtractor = true
+		encroachingExtractorsCount -= 1
+		isNotEncroachingExtractor= !encroachingExtractorsCount
 	
 	if isNotEncroachingExtractor && isRightResNode:
 		outerCube.color = outerGreen
