@@ -35,6 +35,7 @@ color = Color(0.546, 0.91, 0.8736, 0.117647)
 
 [node name="UI" type="Panel" parent="."]
 unique_name_in_owner = true
+z_index = 1
 offset_left = 100.0
 offset_top = -80.0
 offset_right = 260.0

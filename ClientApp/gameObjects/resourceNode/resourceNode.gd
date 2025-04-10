@@ -23,10 +23,15 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if UI.visible == true:
+		# Update scale
+		UI.scale[0] = 1/get_node("%camera+static ui").zoom[0]
+		UI.scale[1] = UI.scale[0]
+		
+		# Update position
 		var m_pos:Vector2 = get_local_mouse_position()
-		UI.position[0] = m_pos[0] + 10
-		UI.position[1] = m_pos[1] - 35
-	
+		UI.position[0] = m_pos[0] + (12 * UI.scale[0])
+		UI.position[1] = m_pos[1] - (0 * UI.scale[0])
+		
 		# Emit signal if clicked
 		if Input.is_action_just_pressed("LMB"):
 			print("Clicked " + self.name)
