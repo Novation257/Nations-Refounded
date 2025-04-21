@@ -6,6 +6,9 @@ var zoom_limits:Vector2 = Vector2(.75,5)
 var mouse_starting_pos: Vector2 = Vector2(0,0)
 var camera_starting_pos: Vector2 = Vector2(0,0)
 
+var old_mpos := Vector2(0,0)
+var new_mpos := Vector2(0,0)
+
 # Changes zoom based on sensitivity and direction
 # Will keep zoom's value between specified limits
 func change_zoom(direction:int) -> void:
@@ -31,14 +34,13 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	# Zoom smoothing
-	var old_mpos = get_global_mouse_position()
-	zoom = lerp(zoom, Vector2(zoom_target, zoom_target), .175)
-	var new_mpos = get_global_mouse_position()
+	new_mpos = get_global_mouse_position()
 	
-	# Panning "momentum"
-	if abs(zoom[0] - zoom_target) < .00005:
-		self.position += 1 * (new_mpos - old_mpos)
+	# Zoom smoothing
+	zoom = lerp(zoom, Vector2(zoom_target, zoom_target), .175)
+	
+	# Camera movement via arrow keys
+	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (30 * 1/zoom[0])
 	
 	# Camera movement via mouse
 	# At start of click, get mouse and camera position
@@ -50,8 +52,10 @@ func _process(delta: float) -> void:
 		var mouse_curr_pos = get_viewport().get_mouse_position()
 		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
 	
-	# Camera movement via arrow keys
-	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (30 * 1/zoom[0])
+	if(abs(zoom[0] - zoom_target) > .05):
+		position += (old_mpos - new_mpos) * (12 + abs(zoom[0] - zoom_target))
+	
+	old_mpos = new_mpos
 	
 	return
 
