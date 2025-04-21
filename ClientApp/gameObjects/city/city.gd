@@ -5,13 +5,16 @@ class_name City
 var id:int
 
 # UI
-var Camera:Camera2D
-var UI:Panel
-var UI_name:Label
-var UI_ownerID:Label
-var UI_population:Label
-var UI_stockpile:Label
-var UI_TTP:Label
+@onready var Camera:Camera2D = get_parent().get_parent().get_node("%camera+static ui")
+@onready var UI:Panel = get_node("%UI")
+@onready var UI_name:Label = get_node("%name")
+@onready var UI_ownerID:Label = get_node("%ownerID")
+@onready var UI_population:Label = get_node("%population")
+@onready var UI_stockpile:Label = get_node("%stockpile")
+@onready var UI_TTP:Label = get_node("%TTP")
+
+# Nodes
+@onready var cityLimits:Polygon2D = get_node("%CityLimitsPoly")
 
 # Signaling
 signal production_tick(city:City)
@@ -23,9 +26,6 @@ var maxPopulation:int = 500000
 var growthRate:float = .02 
 var timeExp:float = .75
 var timeMul:float = 4
-
-# Nodes
-var cityLimits:Polygon2D
 
 # Production
 var population:int = initialPopulation
@@ -81,18 +81,6 @@ func checkResources(playerResources:Resources) -> int:
 	else: return 0
 
 func _ready() -> void:
-	# Get UI nodes
-	Camera = get_parent().get_parent().get_node("%camera+static ui")
-	UI = get_node("%UI")
-	UI_name = get_node("%name")
-	UI_ownerID = get_node("%ownerID")
-	UI_population = get_node("%population")
-	UI_stockpile = get_node("%stockpile")
-	UI_TTP = get_node("%TTP")
-	
-	cityLimits = get_node("%CityLimitsPoly")
-	
-	
 	# Hide UI and update values
 	UI.visible = false
 	UI_name.text = name

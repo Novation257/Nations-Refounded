@@ -10,12 +10,13 @@ class_name Extractor
 var id:int
 
 # UI
-var Camera:Camera2D
-var UI:Panel
-var UI_type:Label
-var UI_ownerID:Label
-var UI_stockpile:Label
-var UI_TTP:Label
+@onready var Camera:Camera2D = get_parent().get_parent().get_node(\"%camera+static ui\")
+@onready var UI:Panel = get_node(\"%UI\")
+@onready var UI_type:Label = get_node(\"%type\")
+@onready var UI_ownerID:Label = get_node(\"%ownerID\")
+@onready var UI_stockpile:Label = get_node(\"%stockpile\")
+@onready var UI_TTP:Label = get_node(\"%TTP\")
+@onready var UI_stockpileDisplay:Label = get_node(\"%stockpileDisplay\")
 
 # Signaling
 var clicked:bool = false
@@ -27,6 +28,7 @@ var exStats = ExtractorType.new()
 var productionTime:int = 3600
 var productionCountdown:int = productionTime
 var stockpile:int = 0
+var constructionTime = 3 * productionTime
 
 # Add production to the extractor and increase stockpile when necessary
 func doProductionTick(time:int) -> void:
@@ -40,6 +42,8 @@ func doProductionTick(time:int) -> void:
 		# Update UI
 		UI_stockpile.text = \"Stockpile: \" + str(stockpile)
 		UI_TTP.text = \"TTP: \" + str(productionCountdown)
+		if(productionCountdown <= productionTime): UI_stockpileDisplay.text = str(stockpile)
+		if(stockpile == 18): UI_stockpileDisplay.add_theme_color_override(\"font_color\", Color.RED)
 	return
 
 # Return the resources stored in the extractor without subtracting from the stockpile
@@ -65,19 +69,16 @@ func collect() -> Resources:
 	# Reset stockpile and return resource changes
 	stockpile = 0
 	UI_stockpile.text = \"Stockpile: \" + str(stockpile)
+	UI_stockpileDisplay.text = str(stockpile)
+	UI_stockpileDisplay.add_theme_color_override(\"font_color\", Color.WHITE)
 	return temp
 
 func _ready() -> void:
 	# Set production values
 	exStats.setType(get_meta(\"Type\"))
 	
-	# Get UI nodes
-	Camera = get_parent().get_parent().get_node(\"%camera+static ui\")
-	UI = get_node(\"%UI\")
-	UI_type = get_node(\"%type\")
-	UI_ownerID = get_node(\"%ownerID\")
-	UI_stockpile = get_node(\"%stockpile\")
-	UI_TTP = get_node(\"%TTP\")
+	# Set production time to include construction time
+	productionCountdown = productionTime + constructionTime
 	
 	# Hide UI and update values
 	UI.visible = false
@@ -147,6 +148,7 @@ shape = SubResource("RectangleShape2D_x1knm")
 
 [node name="UI" type="Panel" parent="."]
 unique_name_in_owner = true
+visible = false
 z_index = 1
 offset_left = 100.0
 offset_top = -80.0
@@ -207,6 +209,15 @@ offset_right = 97.0
 offset_bottom = 23.0
 text = "TTP: 12"
 metadata/_edit_use_anchors_ = true
+
+[node name="stockpileDisplay" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -10.0
+offset_top = -24.0
+offset_right = 22.0
+text = "🔨"
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [connection signal="input_event" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_input_event"]
 [connection signal="mouse_entered" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_mouse_entered"]

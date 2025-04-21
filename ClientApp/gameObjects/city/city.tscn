@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://j0optm68fl2t"]
 
 [ext_resource type="Script" path="res://gameObjects/city/city.gd" id="1_3kdso"]
-[ext_resource type="Texture2D" uid="uid://cv1gw87h4waa7" path="res://sprites/icon.svg" id="2_pjsk0"]
+[ext_resource type="Texture2D" uid="uid://8l1uwc00ek4g" path="res://sprites/city-icon-TEMP.png" id="2_ec56y"]
 [ext_resource type="PackedScene" uid="uid://ckcd1m7hamj04" path="res://helperScenes/circlePoly/CirclePoly.tscn" id="3_4ut7f"]
 [ext_resource type="PackedScene" uid="uid://dywdkjpfrjy8r" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.tscn" id="4_364bv"]
 [ext_resource type="PackedScene" uid="uid://eg3g7xxngiy5" path="res://helperScenes/PolyBorder/PolygonBorder.tscn" id="5_mc7sa"]
@@ -15,8 +15,9 @@ metadata/ownerID = 0
 metadata/population = 10000
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("2_pjsk0")
+position = Vector2(-5.00679e-06, 1.66893e-06)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_ec56y")
 
 [node name="CityInnerColl" type="Area2D" parent="."]
 scale = Vector2(0.6, 0.6)
@@ -35,6 +36,7 @@ color = Color(0.546, 0.91, 0.8736, 0.117647)
 
 [node name="UI" type="Panel" parent="."]
 unique_name_in_owner = true
+visible = false
 z_index = 1
 offset_left = 100.0
 offset_top = -80.0

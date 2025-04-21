@@ -16,10 +16,20 @@ var outerGreen:Color = Color.hex(0x2ee23469)
 var outerOrange:Color = Color.hex(0xe38b2d69)
 
 # Nodes
-var innerCube:Polygon2D
-var outerCube:Polygon2D
-var innerColl:Area2D
-var outerColl:Area2D
+@onready var innerCube:Polygon2D = get_node(\"%Inner cube\")
+@onready var outerCube:Polygon2D = self
+@onready var innerColl:Area2D = get_node(\"%InnerCollision\")
+@onready var outerColl:Area2D = get_node(\"%OuterCollision\")
+
+# Warnings UI
+@onready var Camera:Camera2D = get_parent().get_node(\"%camera+static ui\")
+@onready var UI_warnings:Panel = get_node(\"Warnings\")
+@onready var UI_regionWarn:Label = get_node(\"%RegionWarning\")
+@onready var UI_extractorWarn:Label = get_node(\"%ExtractorWarning\")
+@onready var UI_cityWarn:Label = get_node(\"%CityWarning\")
+@onready var UI_resTypeWarn:Label = get_node(\"%ResTypeWarning\")
+@onready var UI_resNodeWarn:Label = get_node(\"%ResNodeWarning\")
+@onready var UI_cityLimitsWarn:Label = get_node(\"%CityLimitsWarning\")
 
 # Collision checks
 var innerValid:bool = true
@@ -44,6 +54,56 @@ var regionPriority:Array[String] = [\"ocean\", \"barren\", \"plains\", \"forest\
 
 # Signal that is emitted when extractor is placed
 signal ready_to_place(extractor_position:Vector2, type:String)
+
+func updateWarnings() -> void:
+	var warningsArr:Array[Label]
+	
+	# Make everything invisible if placement is valid
+	if (innerValid && outerValid):
+		UI_warnings.visible = false
+		return
+	
+	# Make panel valid
+	UI_warnings.visible = true
+	
+	# Get the list of placement conditions that are not met
+	if(!isNotEncroachingExtractor): warningsArr.append(UI_extractorWarn)
+	else: UI_extractorWarn.visible = false
+	
+	if(!isRightResNode):
+		warningsArr.append(UI_resTypeWarn)
+		UI_resTypeWarn.text = \"Must be built near \" + typeData.constructionResNode
+	else: UI_resTypeWarn.visible = false
+	
+	if(!isRightRegion):
+		warningsArr.append(UI_regionWarn)
+		UI_regionWarn.text = \"Must be built on \" + typeData.constructionRegion
+	else: UI_regionWarn.visible = false
+	
+	if(!isWithinCityLimits): warningsArr.append(UI_cityLimitsWarn)
+	else: UI_cityLimitsWarn.visible = false
+	
+	if(!isNotEncroachingResNode): warningsArr.append(UI_resNodeWarn)
+	else: UI_resNodeWarn.visible = false
+	
+	if(!isNotEncroachingCity): warningsArr.append(UI_cityWarn)
+	else: UI_cityWarn.visible = false
+	
+	# Make labels visible and position them in a list
+	var i := 5
+	var longestWarn := 0
+	for warning:Label in warningsArr:
+		warning.visible = true
+		warning.position = Vector2(5, i)
+		longestWarn = max(warning.size.x, longestWarn)
+		i += 25
+	
+	# Update panel size and scale
+	UI_warnings.size = Vector2(longestWarn + 10, i)
+	UI_warnings.scale[0] = 1/Camera.zoom[0]
+	UI_warnings.scale[1] = UI_warnings.scale[0]
+	return
+
 
 func checkRegion(regionName:String) -> bool:
 	var regionInArray = false
@@ -80,17 +140,13 @@ func setType(type:String):
 	return
 
 func _ready() -> void:
-	# Get nodes
-	innerCube = get_node(\"%Inner cube\")
-	outerCube = self
-	innerColl = get_node(\"%InnerCollision\")
-	outerColl = get_node(\"%OuterCollision\")
-	
 	position = Vector2(-5000, -5000) # Workaround for collision detection bug
 	return
 
 func _process(delta: float) -> void:
+	# Update position and warnings
 	self.position = get_global_mouse_position()
+	updateWarnings()
 	
 	# On left click, signal to place extractor then delete UI
 	if Input.is_action_just_pressed(\"LMB\"):
@@ -215,6 +271,61 @@ unique_name_in_owner = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="OuterCollision"]
 visible = false
 shape = SubResource("RectangleShape2D_d50dv")
+
+[node name="Warnings" type="Panel" parent="."]
+unique_name_in_owner = true
+offset_left = 80.0
+offset_top = -75.0
+offset_right = 305.0
+offset_bottom = 85.0
+
+[node name="RegionWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 220.0
+offset_bottom = 28.0
+text = "Must be built on mountains"
+
+[node name="ExtractorWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 30.0
+offset_right = 176.0
+offset_bottom = 53.0
+text = "Encroaching extractor"
+
+[node name="CityWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 55.0
+offset_right = 132.0
+offset_bottom = 78.0
+text = "Encroaching city"
+
+[node name="ResTypeWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 80.0
+offset_right = 221.0
+offset_bottom = 103.0
+text = "Must be built near platinum"
+
+[node name="ResNodeWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 105.0
+offset_right = 215.0
+offset_bottom = 128.0
+text = "Encroaching resource node"
+
+[node name="CityLimitsWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_top = 130.0
+offset_right = 200.0
+offset_bottom = 153.0
+text = "Must be within city limits"
 
 [connection signal="area_entered" from="Inner cube/InnerCollision" to="." method="_on_inner_collision_area_entered"]
 [connection signal="area_exited" from="Inner cube/InnerCollision" to="." method="_on_inner_collision_area_exited"]

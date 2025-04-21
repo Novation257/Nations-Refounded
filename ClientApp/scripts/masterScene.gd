@@ -5,15 +5,14 @@ var time:int
 var curr_player:Player
 
 # UI
-var moneyUI:Label
-var foodUI:Label
-var energyUI:Label
-var BMUI:Label
-var CGUI:Label
-var CompositesUI:Label
-
-var staticUI:StaticUI
-var buildMenu:ScrollContainer
+@onready var moneyUI:Label = get_node("%camera+static ui/%Money Number")
+@onready var foodUI:Label = get_node("%camera+static ui/%Food Number")
+@onready var energyUI:Label = get_node("%camera+static ui/%Energy Number")
+@onready var BMUI:Label = get_node("%camera+static ui/%BM Number")
+@onready var CGUI:Label = get_node("%camera+static ui/%CG Number")
+@onready var CompositesUI:Label = get_node("%camera+static ui/%Composites Number")
+@onready var staticUI:StaticUI = get_node("%camera+static ui/%UI")
+@onready var buildMenu:ScrollContainer = staticUI.get_node("%BuildMenu")
 
 # Process flags
 var placingExtractor:bool = false
@@ -67,17 +66,6 @@ func _ready() -> void:
 	curr_player.resources.energy = 7000 # 0 before demo
 	curr_player.resources.consumer_goods = 4000 # 0 before demo
 	curr_player.resources.composites = 600 # 0 before demo
-	
-	# Get UI nodes
-	moneyUI = get_node("%camera+static ui/%Money Number")
-	foodUI = get_node("%camera+static ui/%Food Number")
-	energyUI = get_node("%camera+static ui/%Energy Number")
-	BMUI = get_node("%camera+static ui/%BM Number")
-	CGUI = get_node("%camera+static ui/%CG Number")
-	CompositesUI = get_node("%camera+static ui/%Composites Number")
-	
-	staticUI = get_node("%camera+static ui/%UI")
-	buildMenu = staticUI.get_node("%BuildMenu")
 	
 	# Connect all signals from child nodes to this script
 	for rn in get_node("%Res Nodes").get_children():
@@ -174,6 +162,10 @@ func _on_res_node_clicked(extractor:String) -> void:
 	placeRecourceExtractor(extractor)
 
 func _on_build_button_pressed(extractor:String) -> void:
+	# Cancel building previous extractor
+	var buildNode := get_node("ExtractorPlacementUI")
+	if(buildNode): buildNode.queue_free()
+	
 	staticUI.toggleBuildMenu()
 	placeRecourceExtractor(extractor)
 

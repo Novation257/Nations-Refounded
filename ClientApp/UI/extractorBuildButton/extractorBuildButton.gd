@@ -2,13 +2,13 @@ extends Control
 class_name extractorBuildButton
 
 # Nodes
-var nameLabel:Label
-var consumptionLabel:Label
-var productionLabel:Label
-var constructionLabel:Label
-var regionLabel:Label
-var resNodeLabel:Label
-var buildButton:Button
+@onready var nameLabel:Label = get_node("Panel/ExtractorName")
+@onready var consumptionLabel:Label = get_node("Panel/Consumption/ConsumptionMats")
+@onready var productionLabel:Label = get_node("Panel/Production/ProductionMats")
+@onready var constructionLabel:Label = get_node("Panel/ConstructionCost/ConstructionMats")
+@onready var regionLabel:Label = get_node("Panel/ReqRegion")
+@onready var resNodeLabel:Label = get_node("Panel/ReqNode")
+@onready var buildButton:Button = get_node("Panel/BuildButton")
 
 var buildable:ExtractorType
 
@@ -25,17 +25,6 @@ func buildResourceString(delimiter:String, resources:Resources) -> String:
 	if (resources.composites != 0): returnString += "Composites:  " + str(resources.composites) + delimiter
 	
 	return returnString 
-
-# Get child nodes on ready
-func _ready() -> void:
-	nameLabel = get_node("Panel/ExtractorName")
-	consumptionLabel = get_node("Panel/Consumption/ConsumptionMats")
-	productionLabel = get_node("Panel/Production/ProductionMats")
-	constructionLabel = get_node("Panel/ConstructionCost/ConstructionMats")
-	regionLabel = get_node("Panel/ReqRegion")
-	resNodeLabel = get_node("Panel/ReqNode")
-	buildButton = get_node("Panel/BuildButton")
-
 
 func setStats(extractorStats:ExtractorType) -> void:
 	buildable = extractorStats

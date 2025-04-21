@@ -3,8 +3,8 @@ extends Node2D
 var RN_name:String
 
 # UI
-var UI:Panel
-var UI_name:Label
+@onready var UI:Panel = get_node("%UI")
+@onready var UI_name:Label = get_node("%RN_Name")
 
 # Signal to emit when clicked
 signal node_clicked(extractorType:String)
@@ -12,13 +12,8 @@ signal node_clicked(extractorType:String)
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	RN_name = get_meta("resource")
-	
-	UI = get_node("%UI")
 	UI.visible = false
-	
-	UI_name = get_node("%RN_Name")
 	UI_name.text = RN_name
-	
 	pass
 
 func _process(delta: float) -> void:
