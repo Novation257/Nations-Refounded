@@ -11,13 +11,14 @@ var extractorPanels:Array[extractorBuildButton]
 
 # Displays a message on screen that disappears after 5 seconds
 func notify(message:String) -> void:
+	# Create new panel
 	var panel := Panel.new()
 
 	# Add label that contains the message
 	var label := Label.new()
 	panel.add_child(label)
 	label.text = message
-	label.size = Vector2(200, 25)
+	label.size = Vector2(250, 25)
 	label.position = Vector2(5, 2.5)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
@@ -26,12 +27,19 @@ func notify(message:String) -> void:
 	panel.add_child(timer)
 	timer.connect("timeout", panel.queue_free)
 	
+		# Move all other notifications up
+	var master_children := get_children()
+	for node in master_children:
+		if node.get_meta("isNotif") == true:
+			node.position.y -= ceil(1.5*(label.size.y + 6))
+	
 	# Set panel variables and start timer
 	self.add_child(panel)
 	panel.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	panel.position = Vector2(5, get_viewport().size.y - 59)
-	panel.size = Vector2(210, 31)
+	panel.size = Vector2(label.size.x + 10, label.size.y + 6)
 	panel.scale = Vector2(1.5, 1.5)
+	panel.set_meta("isNotif", true)
 	timer.start(5)
 	return
 

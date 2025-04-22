@@ -59,7 +59,6 @@ func _process(delta: float) -> void:
 	
 	position.x = max(limit_left, min(limit_right, position.x))
 	position.y = max(limit_top, min(limit_bottom, position.y))
-	print(position)
 	return
 
 func _on_build_menu_focus_entered() -> void:

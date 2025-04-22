@@ -34,15 +34,16 @@ func check_extractor_collection(extractors:Array[Node]) -> void:
 	for extractor in extractors:
 		# If the clicked extractor is owned by the current player
 		if extractor.clicked == true && extractor.get_meta("ownerID") == curr_player.id:
+			var ex_name = extractor.get_meta("Type")
 			# If there are no resources in the extractor...
-			if extractor.stockpile == 0: print(extractor.name + " has no resources to collect")
+			if extractor.stockpile == 0: staticUI.notify(ex_name + " has no resources to collect")
 			# If the player has the resources to collect...
 			elif curr_player.resources.canCombine(extractor.get_stored()):
-				print("Collected resources from " + extractor.name)
+				staticUI.notify("Collected resources from " + ex_name)
 				extractor.get_stored().print()
 				curr_player.resources.combine(extractor.collect())
 			else:
-				print("Not enough resources to collect from " + extractor.name)
+				staticUI.notify("Not enough resources to collect from " + ex_name)
 				extractor.get_stored().print()
 
 func update_build_buttons() -> void:
@@ -187,4 +188,5 @@ func _on_city_production_tick(city:City) -> void:
 
 func _on_taxes_collected(taxes:int) -> void:
 	curr_player.resources.money += taxes
+	staticUI.notify("Collected " + str(taxes) + " money from city")
 	return
