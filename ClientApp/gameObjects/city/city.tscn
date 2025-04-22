@@ -38,10 +38,8 @@ color = Color(0.546, 0.91, 0.8736, 0.117647)
 unique_name_in_owner = true
 visible = false
 z_index = 1
-offset_left = 100.0
-offset_top = -80.0
-offset_right = 260.0
-offset_bottom = 55.0
+offset_right = 160.0
+offset_bottom = 135.0
 metadata/_edit_use_anchors_ = true
 
 [node name="name" type="Label" parent="UI"]
@@ -112,6 +110,93 @@ offset_right = 97.0
 offset_bottom = 23.0
 text = "TTP: 12"
 metadata/_edit_use_anchors_ = true
+
+[node name="Display" type="Panel" parent="."]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -65.0
+offset_top = -60.0
+offset_right = 65.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="nameDisplay" type="Label" parent="Display"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = -11.5
+offset_right = 57.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "CityLongName"
+horizontal_alignment = 1
+
+[node name="popPanel" type="Panel" parent="Display"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 0
+
+[node name="popDisplay" type="Label" parent="Display/popPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 33.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+text = "33.3k"
+horizontal_alignment = 1
+
+[node name="taxPanel" type="Panel" parent="Display"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_right = 130.0
+offset_bottom = 20.0
+grow_vertical = 0
+
+[node name="taxDIsplay" type="Label" parent="Display/taxPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 33.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+text = "33.3k
+"
+horizontal_alignment = 1
 
 [connection signal="input_event" from="CityInnerColl" to="." method="_on_city_inner_coll_input_event"]
 [connection signal="mouse_entered" from="CityInnerColl" to="." method="_on_city_inner_coll_mouse_entered"]

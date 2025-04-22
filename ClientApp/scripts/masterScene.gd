@@ -1,4 +1,5 @@
 extends Node2D
+class_name Master
 
 const TIMEMUL:int = 3600/4 # 1 sec = 15 min
 var time:int

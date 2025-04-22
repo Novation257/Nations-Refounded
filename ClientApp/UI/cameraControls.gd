@@ -57,8 +57,8 @@ func _process(delta: float) -> void:
 	
 	old_mpos = new_mpos
 	
-	position.x = max(limit_left, min(limit_right, position.x))
-	position.y = max(limit_top, min(limit_bottom, position.y))
+	position.x = max(-2000, min(2000, position.x))
+	position.y = max(-1000, min(2000, position.y))
 	return
 
 func _on_build_menu_focus_entered() -> void:
