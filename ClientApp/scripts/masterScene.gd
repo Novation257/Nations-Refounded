@@ -54,6 +54,13 @@ func update_build_buttons() -> void:
 			extractorPanel.buildButton.text = "Insufficient Materials"
 			extractorPanel.buildButton.disabled = true
 
+func update_ui() -> void:
+	moneyUI.text = str(curr_player.resources.money)
+	foodUI.text = str(curr_player.resources.food)
+	energyUI.text = str(curr_player.resources.energy)
+	BMUI.text = str(curr_player.resources.building_materials)
+	CGUI.text = str(curr_player.resources.consumer_goods)
+	CompositesUI.text = str(curr_player.resources.composites)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -80,15 +87,6 @@ func _ready() -> void:
 	buildMenu.visible = false
 	return
 
-func update_ui() -> void:
-	moneyUI.text = str(curr_player.resources.money)
-	foodUI.text = str(curr_player.resources.food)
-	energyUI.text = str(curr_player.resources.energy)
-	BMUI.text = str(curr_player.resources.building_materials)
-	CGUI.text = str(curr_player.resources.consumer_goods)
-	CompositesUI.text = str(curr_player.resources.composites)
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var extractors = get_node("%Extractors").get_children()
@@ -113,11 +111,11 @@ func _process(delta: float) -> void:
 	
 	# Run input routines if button is pressed
 	if Input.is_action_just_pressed("debug1"):
-		placeRecourceExtractor("Rice Farm")
+		staticUI.notify("This is a message")
 	if Input.is_action_just_pressed("debug2"):
-		placeRecourceExtractor("Wind Turbine")
+		pass
 	if Input.is_action_just_pressed("debug3"):
-		placeRecourceExtractor("Dairy Farm")
+		pass
 	if Input.is_action_just_pressed("BuildMenuToggle"):
 		staticUI.toggleBuildMenu()
 	
