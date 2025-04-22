@@ -52,10 +52,14 @@ func _process(delta: float) -> void:
 		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
 	
 	if(abs(zoom[0] - zoom_target) > .05):
-		position += (old_mpos - new_mpos) * (12 + abs(zoom[0] - zoom_target))
+		position += (old_mpos - new_mpos) * (3 + abs(zoom[0] - zoom_target))
+		pass
 	
 	old_mpos = new_mpos
 	
+	position.x = max(limit_left, min(limit_right, position.x))
+	position.y = max(limit_top, min(limit_bottom, position.y))
+	print(position)
 	return
 
 func _on_build_menu_focus_entered() -> void:
