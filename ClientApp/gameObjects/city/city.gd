@@ -15,6 +15,7 @@ var id:int
 
 # Nodes
 @onready var cityLimits:Polygon2D = get_node("%CityLimitsPoly")
+@onready var master:Node2D = get_parent().get_parent()
 
 # Signaling
 signal production_tick(city:City)
@@ -120,11 +121,12 @@ func _on_city_inner_coll_mouse_exited() -> void:
 # On left click - collect taxes
 func _on_city_inner_coll_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if(Input.is_action_just_pressed("LMB")):
-		print("City clicked")
-		# Send taxes to masterScene and empty stockpile
-		taxes_collected.emit(calculateTaxProduction(population) * stockpile)
-		stockpile = 0
-		
-		# Update UI
-		UI_stockpile.text = "Taxes: 0"
+		if(master.curr_player.id == get_meta("ownerID")):
+			# Send taxes to masterScene and empty stockpile
+			taxes_collected.emit(calculateTaxProduction(population) * stockpile)
+			stockpile = 0
+			
+			# Update UI
+			UI_stockpile.text = "Taxes: 0"
+		else: master.staticUI.notify("Cannot collect taxes from another player's city")
 	return
