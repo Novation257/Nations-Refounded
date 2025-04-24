@@ -1,6 +1,7 @@
 extends Node2D
 class_name Master
 
+const AUTOCOLLECT:bool = true
 const TIMEMUL:int = 3600/4 # 1 sec = 15 min
 var time:int
 var curr_player:Player
@@ -34,18 +35,18 @@ func placeRecourceExtractor(type:String) -> void:
 func check_extractor_collection(extractors:Array[Node]) -> void:
 	for extractor in extractors:
 		# If the clicked extractor is owned by the current player
-		if extractor.clicked == true && extractor.get_meta("ownerID") == curr_player.id:
+		if (extractor.clicked == true || (AUTOCOLLECT && extractor.stockpile > 0)) && extractor.get_meta("ownerID") == curr_player.id:
 			var ex_name = extractor.get_meta("Type")
 			# If there are no resources in the extractor...
 			if extractor.stockpile == 0: staticUI.notify(ex_name + " has no resources to collect")
 			# If the player has the resources to collect...
 			elif curr_player.resources.canCombine(extractor.get_stored()):
-				staticUI.notify("Collected resources from " + ex_name)
-				extractor.get_stored().print()
+				if !AUTOCOLLECT: staticUI.notify("Collected resources from " + ex_name)
+				#extractor.get_stored().print()
 				curr_player.resources.combine(extractor.collect())
 			else:
 				staticUI.notify("Not enough resources to collect from " + ex_name)
-				extractor.get_stored().print()
+				#extractor.get_stored().print()
 
 func update_build_buttons() -> void:
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
@@ -69,11 +70,11 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 22000 # 15000 before demo
-	curr_player.resources.food = 13000 # 5000 before demo
-	curr_player.resources.building_materials = 9000 # 5000 before demo
+	curr_player.resources.money = 15000 # 15000 before demo
+	curr_player.resources.food = 500 # 5000 before demo
+	curr_player.resources.building_materials = 5000 # 5000 before demo
 	curr_player.resources.energy = 7000 # 0 before demo
-	curr_player.resources.consumer_goods = 4000 # 0 before demo
+	curr_player.resources.consumer_goods = 3000 # 0 before demo
 	curr_player.resources.composites = 600 # 0 before demo
 	
 	# Connect all signals from child nodes to this script
@@ -176,15 +177,21 @@ func _on_city_production_tick(city:City) -> void:
 		if (city.stockpile < 18*2): city.stockpile += 1
 		city.growPopulation(1)
 		curr_player.resources.combine(city.inputs.negateNoMod())
+		print("Good for " + city.name)
 	elif (resourceCheck == 3): # City starving AND no consumer goods - no tax production, shrink population
-		city.growPopulation(-0.1)
+		city.growPopulation(-2)
+		curr_player.resources.food = 0
+		curr_player.resources.consumer_goods = 0
 	elif (resourceCheck == 1): # City starving - no tax production, shrink population, consume CG
-		city.growPopulation(-0.1)
+		city.growPopulation(-2)
+		curr_player.resources.food = 0
 		curr_player.resources.consumer_goods -= city.inputs.consumer_goods
+		print("Bad for " + city.name)
 	elif (resourceCheck == 2): # No consumer goods - less tax production, less population growth, consume food
 		if (city.stockpile >= 18*2): city.stockpile += 0.5
-		city.growPopulation(0.5)
+		city.growPopulation(0.25)
 		curr_player.resources.food -= city.inputs.food
+		curr_player.resources.consumer_goods = 0
 	return
 
 func _on_taxes_collected(taxes:int) -> void:

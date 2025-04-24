@@ -29,8 +29,6 @@ signal taxes_collected(taxes:int)
 var initialPopulation:int = 1000
 var maxPopulation:int = 500000
 var growthRate:float = .02 
-var timeExp:float = .75
-var timeMul:float = 4
 
 # Production
 var population:int = initialPopulation
@@ -46,16 +44,23 @@ func buildNumString(num:float) -> String:
 	else: return(str(num))
 
 func calculateFoodUsage(population:int) -> int:
-	return floor((population * .001) - .00006*pow(population, 1.2) + 5)
+	return floor(((population * .001) - .00006*pow(population, 1.2) + 5) / 2)
 
 func calculateCGUsage(population:int) -> int:
-	return floor(calculateFoodUsage(population) * .10)
+	return floor(calculateFoodUsage(population) * .2)
 
 func calculateTaxProduction(population:int) -> int:
-	return floor(calculateFoodUsage(population) * 3.5)
+	return floor(calculateFoodUsage(population) * 6)
 
 func growPopulation(modifier:float) -> void:
-	population += (growthRate * population)* max(0, 1-(population/maxPopulation)) * modifier
+	# Update UI according to modifier
+	if (modifier < 0): UI_popDis.add_theme_color_override("font_color", Color.RED)
+	elif (modifier < 1): UI_popDis.add_theme_color_override("font_color", Color.YELLOW)
+	else: UI_popDis.add_theme_color_override("font_color", Color.WHITE)
+	
+	# Calculate and update new population
+	if (modifier < 0): population += (growthRate * population) * modifier
+	else: population += (growthRate * population)* max(0, 1-(population/maxPopulation)) * modifier
 	set_meta("population", population)
 
 # Add production to the extractor and increase stockpile when necessary

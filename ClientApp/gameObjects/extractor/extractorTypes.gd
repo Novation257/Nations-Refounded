@@ -3,8 +3,8 @@ class_name ExtractorType
 var typeName:String
 
 const _NUMTYPES:int = 20 # Incrament this if adding a new extractor type
-const _BASEMOD:int = 3
-const _RNOUTPUTMOD:int = 5
+const _BASEMOD:int = 4
+const _RNOUTPUTMOD:int = 6
 
 # Construction
 var constructionCost:Resources = Resources.new()
@@ -124,8 +124,8 @@ func setType(type:String) -> ExtractorType:
 			inputs.energy = 10 * _BASEMOD
 			outputs.building_materials = 9 * _BASEMOD
 			constructionCost.money = 675 * _BASEMOD
-			constructionCost.building_materials = 500 * _BASEMOD
-			constructionCost.composites = 250 * _BASEMOD
+			constructionCost.building_materials = 125 * _BASEMOD
+			constructionCost.composites = 100 * _BASEMOD
 			constructionRegion = "barren"
 		"Stonemason", "13":
 			typeName = "Stonemason"
