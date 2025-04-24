@@ -177,7 +177,6 @@ func _on_city_production_tick(city:City) -> void:
 		if (city.stockpile < 18*2): city.stockpile += 1
 		city.growPopulation(1)
 		curr_player.resources.combine(city.inputs.negateNoMod())
-		print("Good for " + city.name)
 	elif (resourceCheck == 3): # City starving AND no consumer goods - no tax production, shrink population
 		city.growPopulation(-2)
 		curr_player.resources.food = 0
@@ -186,7 +185,6 @@ func _on_city_production_tick(city:City) -> void:
 		city.growPopulation(-2)
 		curr_player.resources.food = 0
 		curr_player.resources.consumer_goods -= city.inputs.consumer_goods
-		print("Bad for " + city.name)
 	elif (resourceCheck == 2): # No consumer goods - less tax production, less population growth, consume food
 		if (city.stockpile >= 18*2): city.stockpile += 0.5
 		city.growPopulation(0.25)
