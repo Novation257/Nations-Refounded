@@ -15,7 +15,7 @@ var inside_city:City = null
 var selected:bool = false
 
 # For UI, can change depending on which node would be the right one to get
-@onready var master = get_tree().get_root().get_node("masterScene")
+@onready var master = get_tree().get_root().get_node("Master Node")
 
 # Build cost, can be changed
 const UNIT_COST:int = 100
