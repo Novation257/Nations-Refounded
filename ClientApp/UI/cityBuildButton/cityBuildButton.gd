@@ -17,6 +17,7 @@ signal build_button_clicked()
 signal menu_toggle_pressed()
 
 func _ready() -> void:
+	panel.visible = false
 	constructionCost.money = tempCity.cc_money
 	constructionCost.food = tempCity.cc_food
 	constructionCost.building_materials = tempCity.cc_building_materials
