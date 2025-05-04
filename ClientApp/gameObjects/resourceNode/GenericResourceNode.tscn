@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dyisil0laddwh"]
 
-[ext_resource type="Texture2D" uid="uid://cv1gw87h4waa7" path="res://sprites/icon.svg" id="1_5e3ej"]
 [ext_resource type="Script" path="res://gameObjects/resourceNode/resourceNode.gd" id="1_fp0ch"]
+[ext_resource type="Texture2D" uid="uid://e8f6wo5y4i3l" path="res://sprites/rn-icon-default-TEMP.png" id="2_ntv70"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_70tww"]
 
@@ -11,8 +11,8 @@ metadata/resource = "None"
 metadata/Extractor = ""
 
 [node name="Bananas RN" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_5e3ej")
+scale = Vector2(0.013, 0.013)
+texture = ExtResource("2_ntv70")
 
 [node name="ResNodeColl" type="Area2D" parent="."]
 scale = Vector2(1.25, 1.25)
@@ -22,21 +22,21 @@ shape = SubResource("RectangleShape2D_70tww")
 
 [node name="UI" type="Panel" parent="."]
 unique_name_in_owner = true
-visible = false
 z_index = 1
 offset_left = 32.0
-offset_top = -27.0
-offset_right = 142.0
-offset_bottom = 8.0
+offset_top = -32.0
+offset_right = 64.0
+offset_bottom = 3.0
+size_flags_horizontal = 3
 
 [node name="RN_Name" type="Label" parent="UI"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
-offset_right = 87.0
+offset_right = 28.0
 offset_bottom = 28.0
-text = "RN_Name"
+text = "RN"
 
 [connection signal="mouse_entered" from="ResNodeColl" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="mouse_exited" from="ResNodeColl" to="." method="_on_area_2d_mouse_exited"]

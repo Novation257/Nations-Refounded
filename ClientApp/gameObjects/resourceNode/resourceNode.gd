@@ -18,6 +18,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if UI.visible == true:
+		UI.size.x = UI_name.size.x + 10
 		# Update scale
 		UI.scale[0] = 1/get_node("%camera+static ui").zoom[0]
 		UI.scale[1] = UI.scale[0]

@@ -1,7 +1,7 @@
 extends Node2D
 class_name Master
 
-const AUTOCOLLECT:bool = true
+const AUTOCOLLECT:bool = false
 const TIMEMUL:int = 3600/4 # 1 sec = 15 min
 var time:int
 var curr_player:Player
@@ -17,7 +17,7 @@ var curr_player:Player
 @onready var buildMenu:ScrollContainer = staticUI.get_node("%BuildMenu")
 
 # Process flags
-var placingExtractor:bool = false
+var placingObject:bool = false
 
 func placeRecourceExtractor(type:String) -> void:
 	# Load extractor UI and instanciate
@@ -29,6 +29,17 @@ func placeRecourceExtractor(type:String) -> void:
 	
 	# Connect signal
 	placementUI.ready_to_place.connect(_on_extractor_placed)
+	pass
+
+func placeCity() -> void:
+	# Load city UI and instanciate
+	var newUIRes:Resource = load("res://gameObjects/city/cityPlacementUI.tscn")
+	var placementUI = newUIRes.instantiate()
+	placementUI.position = get_global_mouse_position()
+	get_node(".").add_child(placementUI)
+	
+	# Connect signal
+	placementUI.ready_to_place.connect(_on_city_placed)
 	pass
 
 # Check if any extractor was clicked and attempt to collect resources
@@ -71,7 +82,7 @@ func _ready() -> void:
 	curr_player = Player.new()
 	curr_player.id = 1
 	curr_player.resources.money = 15000 # 15000 before demo
-	curr_player.resources.food = 500 # 5000 before demo
+	curr_player.resources.food = 5000 # 5000 before demo
 	curr_player.resources.building_materials = 5000 # 5000 before demo
 	curr_player.resources.energy = 7000 # 0 before demo
 	curr_player.resources.consumer_goods = 3000 # 0 before demo
@@ -116,7 +127,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("debug1"):
 		staticUI.notify("This is a message")
 	if Input.is_action_just_pressed("debug2"):
-		pass
+		placeCity()
 	if Input.is_action_just_pressed("debug3"):
 		pass
 	if Input.is_action_just_pressed("BuildMenuToggle"):
@@ -148,9 +159,11 @@ func _on_city_placed(city_position:Vector2) -> void:
 	var newCityRes:Resource = load("res://gameObjects/city/city.tscn")
 	var newCity:City = newCityRes.instantiate()
 	
-	# Set extractor variables and metadata
+	# Set city variables and metadata
 	newCity.set_meta("ownerID", curr_player.id)
 	newCity.position = get_global_mouse_position() #TODO: change to pioneer's position
+	newCity.population = newCity.initialPopulation
+	newCity.set_meta("population", newCity.population)
 	
 	# Add to cities node and connect production signal
 	get_node("%Cities").add_child(newCity)

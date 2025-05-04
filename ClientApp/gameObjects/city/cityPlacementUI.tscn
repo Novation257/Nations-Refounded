@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://jbw4and58xg5"]
+
+[ext_resource type="Script" path="res://gameObjects/city/cityPlacementUI.gd" id="1_wqufh"]
+[ext_resource type="PackedScene" uid="uid://ckcd1m7hamj04" path="res://helperScenes/circlePoly/CirclePoly.tscn" id="2_srd7v"]
+[ext_resource type="PackedScene" uid="uid://dywdkjpfrjy8r" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.tscn" id="3_lof2s"]
+
+[node name="CityPlacementUI" type="Polygon2D"]
+color = Color(0.178, 0.89, 0.201733, 0)
+polygon = PackedVector2Array(-75, -75, -75, 75, 75, 75, 75, -75)
+script = ExtResource("1_wqufh")
+
+[node name="Outer" parent="." instance=ExtResource("2_srd7v")]
+unique_name_in_owner = true
+scale = Vector2(15, 15)
+
+[node name="OuterColl" parent="Outer" instance=ExtResource("3_lof2s")]
+unique_name_in_owner = true
+
+[node name="Middle" parent="." instance=ExtResource("2_srd7v")]
+unique_name_in_owner = true
+scale = Vector2(8, 8)
+
+[node name="MiddleColl" parent="Middle" instance=ExtResource("3_lof2s")]
+unique_name_in_owner = true
+
+[node name="Inner" parent="." instance=ExtResource("2_srd7v")]
+unique_name_in_owner = true
+scale = Vector2(0.5, 0.5)
+
+[node name="InnerColl" parent="Inner" instance=ExtResource("3_lof2s")]
+unique_name_in_owner = true
+
+[node name="Warnings" type="Panel" parent="."]
+unique_name_in_owner = true
+offset_left = 80.0
+offset_top = -75.0
+offset_right = 405.0
+offset_bottom = 35.0
+
+[node name="RegionWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 320.0
+offset_bottom = 28.0
+text = "Must be built on plains or barren terrain"
+
+[node name="RangeWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 30.0
+offset_right = 195.0
+offset_bottom = 53.0
+text = "Too close to another city"
+
+[node name="FarWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 55.0
+offset_right = 195.0
+offset_bottom = 78.0
+text = "Too far from other cities"
+
+[node name="ResNodeWarning" type="Label" parent="Warnings"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 80.0
+offset_right = 215.0
+offset_bottom = 103.0
+text = "Encroaching resource node"
+
+[connection signal="area_entered" from="Outer/OuterColl" to="." method="_on_outer_collision_area_entered"]
+[connection signal="area_exited" from="Outer/OuterColl" to="." method="_on_outer_collision_area_exited"]
+[connection signal="area_entered" from="Middle/MiddleColl" to="." method="_on_middle_collision_area_entered"]
+[connection signal="area_exited" from="Middle/MiddleColl" to="." method="_on_middle_collision_area_exited"]
+[connection signal="area_entered" from="Inner/InnerColl" to="." method="_on_inner_collision_area_entered"]
+[connection signal="area_exited" from="Inner/InnerColl" to="." method="_on_inner_collision_area_exited"]

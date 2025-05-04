@@ -39,15 +39,15 @@ func _process(delta: float) -> void:
 	zoom = lerp(zoom, Vector2(zoom_target, zoom_target), .175)
 	
 	# Camera movement via arrow keys
-	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (30 * 1/zoom[0])
+	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (15 * 1/zoom[0])
 	
 	# Camera movement via mouse
 	# At start of click, get mouse and camera position
-	if Input.is_action_just_pressed("LMB"):
+	if Input.is_action_just_pressed("RMB"):
 		camera_starting_pos = position
 		mouse_starting_pos = get_viewport().get_mouse_position()
 	# Update camera position based on mouse movement while clicked
-	elif Input.is_action_pressed("LMB"):
+	elif Input.is_action_pressed("RMB"):
 		var mouse_curr_pos = get_viewport().get_mouse_position()
 		position = camera_starting_pos - (1/zoom[0])*(mouse_curr_pos - mouse_starting_pos)
 	

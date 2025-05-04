@@ -1,144 +1,30 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8witt57rpqyq"]
+[gd_scene load_steps=5 format=3 uid="uid://b8witt57rpqyq"]
 
+[ext_resource type="Script" path="res://gameObjects/extractor/extractor.gd" id="1_0kqrl"]
 [ext_resource type="PackedScene" uid="uid://dywdkjpfrjy8r" path="res://helperScenes/inheritedCollPoly/inheritedCollPoly.tscn" id="1_4243g"]
-
-[sub_resource type="GDScript" id="GDScript_4xwks"]
-script/source = "extends Polygon2D
-class_name Extractor
-
-# Identifiers
-var id:int
-
-# UI
-@onready var Camera:Camera2D = get_parent().get_parent().get_node(\"%camera+static ui\")
-@onready var UI:Panel = get_node(\"%UI\")
-@onready var UI_type:Label = get_node(\"%type\")
-@onready var UI_ownerID:Label = get_node(\"%ownerID\")
-@onready var UI_stockpile:Label = get_node(\"%stockpile\")
-@onready var UI_TTP:Label = get_node(\"%TTP\")
-@onready var UI_stockpileDisplay:Label = get_node(\"%stockpileDisplay\")
-
-# Signaling
-var clicked:bool = false
-
-# Extractor type
-var exStats = ExtractorType.new()
-
-# Production
-var productionTime:int = 3600
-var productionCountdown:int = productionTime
-var stockpile:int = 0
-var constructionTime = 3 * productionTime
-
-# Add production to the extractor and increase stockpile when necessary
-func doProductionTick(time:int) -> void:
-	if(stockpile < 18): # Don't do production if stockiple is full (18 production cycles)
-		#print(\"Doing tick on extractor:\" + name)
-		productionCountdown -= time
-		if(productionCountdown <= 0): # Production cycle completed
-			stockpile += 1
-			productionCountdown = productionTime + productionCountdown
-		
-		# Update UI
-		UI_stockpile.text = \"Stockpile: \" + str(stockpile)
-		UI_TTP.text = \"TTP: \" + str(productionCountdown)
-		if(productionCountdown <= productionTime): UI_stockpileDisplay.text = str(stockpile)
-		if(stockpile == 18): UI_stockpileDisplay.add_theme_color_override(\"font_color\", Color.RED)
-	return
-
-# Return the resources stored in the extractor without subtracting from the stockpile
-func get_stored() -> Resources:
-	# Combine into one resource struct with inputs being negative and outputs being positive
-	var temp:Resources = Resources.new()
-	temp.combine(exStats.outputs)
-	var negInputs = Resources.new()
-	negInputs.combine(exStats.inputs)
-	negInputs.negate()
-	temp.combine(negInputs)
-	
-	# Multiply every resource by stockpile
-	temp.applyToAll(func mul(x:int): return x * stockpile)
-	
-	return temp
-
-# Collect the production stored in the extractor
-func collect() -> Resources:
-	# Get resources stored in the extractor
-	var temp:Resources = get_stored()
-	
-	# Reset stockpile and return resource changes
-	stockpile = 0
-	UI_stockpile.text = \"Stockpile: \" + str(stockpile)
-	UI_stockpileDisplay.text = str(stockpile)
-	UI_stockpileDisplay.add_theme_color_override(\"font_color\", Color.WHITE)
-	return temp
-
-func _ready() -> void:
-	# Set production values
-	exStats.setType(get_meta(\"Type\"))
-	
-	# Set production time to include construction time
-	productionCountdown = productionTime + constructionTime
-	
-	# Hide UI and update values
-	UI.visible = false
-	UI_type.text = get_meta(\"Type\")
-	UI_ownerID.text = \"OwnerID: \" + str(get_meta(\"ownerID\"))
-	
-	return
-
-func _process(delta: float) -> void:
-	ready
-	# Make UI follow cursor if the UI isn't hidden
-	if UI.visible == true:
-		# Update scale
-		UI.scale[0] = 1/Camera.zoom[0]
-		UI.scale[1] = UI.scale[0]
-		
-		# Update position
-		var m_pos:Vector2 = get_local_mouse_position()
-		UI.position[0] = m_pos[0] + (12 * UI.scale[0])
-		UI.position[1] = m_pos[1] - (0  * UI.scale[0])
-	
-	clicked = false
-	
-	return
-
-
-# Show/hide UI if mouse is hoving over extractor
-func _on_inherited_collision_mouse_entered() -> void:
-	UI.visible = true
-	return
-
-func _on_inherited_collision_mouse_exited() -> void:
-	UI.visible = false
-	return
-
-
-func _on_inherited_collision_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if(Input.is_action_just_pressed(\"LMB\")):
-		#print(name + \" clicked\")
-		clicked = true
-	else: clicked = false
-"
+[ext_resource type="Texture2D" uid="uid://wpibj04ncjt1" path="res://sprites/extractor-icon-default-TEMP-2.png" id="2_jk1n5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x1knm"]
 size = Vector2(150, 150)
 
 [node name="Extractor" type="Polygon2D"]
-color = Color(0.546, 0.91, 0.8736, 0.286275)
+color = Color(0.79, 0.63516, 0.4029, 0.27451)
 antialiased = true
 polygon = PackedVector2Array(-75, -75, 75, -75, 75, 75, -75, 75)
-script = SubResource("GDScript_4xwks")
+script = ExtResource("1_0kqrl")
 metadata/ownerID = 0
 metadata/Type = ""
 
 [node name="Extractor Cube" type="Polygon2D" parent="."]
 scale = Vector2(1, 0.992)
-color = Color(0.2623, 0.3741, 0.43, 1)
+color = Color(0.2623, 0.3741, 0.43, 0)
 polygon = PackedVector2Array(-25, -25, -25, 25, 25, 25, 25, -25)
 
 [node name="InheritedCollision" parent="Extractor Cube" instance=ExtResource("1_4243g")]
+
+[node name="Sprite2D" type="Sprite2D" parent="Extractor Cube"]
+scale = Vector2(0.025, 0.0252016)
+texture = ExtResource("2_jk1n5")
 
 [node name="ExtractorColl" type="Area2D" parent="."]
 
@@ -212,12 +98,16 @@ metadata/_edit_use_anchors_ = true
 
 [node name="stockpileDisplay" type="Label" parent="."]
 unique_name_in_owner = true
-offset_left = -10.0
+offset_left = -23.0
 offset_top = -24.0
-offset_right = 22.0
+offset_right = 144.0
+offset_bottom = 131.0
+scale = Vector2(0.15, 0.15)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 100
 text = "🔨"
-horizontal_alignment = 2
-vertical_alignment = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="input_event" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_input_event"]
 [connection signal="mouse_entered" from="Extractor Cube/InheritedCollision" to="." method="_on_inherited_collision_mouse_entered"]
