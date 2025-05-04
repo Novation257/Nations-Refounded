@@ -37,6 +37,12 @@ var productionCountdown:int = productionTime
 var stockpile:float = 0
 var inputs:Resources = Resources.new()
 
+# Construction
+var constructionCost:Resources = Resources.new()
+var cc_money = 15000
+var cc_food = 5000
+var cc_building_materials = 10000
+
 func buildNumString(num:float) -> String:
 	if(int(num / 100000) > 0): return(str(int(num) / 1000) + "k")
 	elif (int(num / 10000) > 0): return(str(int(num / 100) / 10.0) + "k")
@@ -71,8 +77,8 @@ func doProductionTick(time:int) -> void:
 		production_tick.emit(self)
 		productionCountdown = productionTime + productionCountdown
 		
-		# Update City limits - log scale giving values between ~2 and ~4.5
-		cityLimits.scale[0] = max(2, (0.69 * log(population) / log(10) - 0.19) + 1)
+		# Update City limits - modified log scale giving values between ~2 and ~4.75
+		cityLimits.scale[0] = max(2, (0.69 * (log(population) / log(10)) + (0.0000018 * population) - 0.1))
 		cityLimits.scale[1] = cityLimits.scale[0]
 		
 		# Update inputs
@@ -101,6 +107,11 @@ func checkResources(playerResources:Resources) -> int:
 	else: return 0
 
 func _ready() -> void:
+	# Set construction costs
+	constructionCost.money = 15000
+	constructionCost.food = 5000
+	constructionCost.building_materials = 10000
+	
 	# Hide UI and update values
 	UI.visible = false
 	UI_name.text = name

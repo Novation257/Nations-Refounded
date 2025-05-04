@@ -1,6 +1,9 @@
 extends Polygon2D
 class_name cityPlacementUI
 
+# Name of city to be placed
+var cityName:String
+
 # UI colors
 var innerGreen:Color = Color.hex(0x2f5e2b90)
 var innerRed:Color = Color.hex(0xe8493890)
@@ -44,7 +47,7 @@ var collisionNames:Array[String]
 var regionPriority:Array[String] = ["ocean", "barren", "plains", "forest", "mountains", "river"]
 
 # Signal that is emitted when city is placed
-signal ready_to_place(city_position:Vector2)
+signal ready_to_place(city_position:Vector2, city_name:String)
 
 func updateWarnings() -> void:
 	var warningsArr:Array[Label]
@@ -127,7 +130,7 @@ func _process(delta: float) -> void:
 	# On left click, signal to place city then delete UI
 	if Input.is_action_just_pressed("LMB"):
 		if(innerValid && middleValid && outerValid):
-			ready_to_place.emit(self.position)
+			ready_to_place.emit(self.position, self.cityName)
 			self.queue_free()
 	
 	# On escape, delete UI
@@ -204,11 +207,9 @@ func _on_middle_collision_area_exited(area: Area2D) -> void:
 # Third radius - if no cities owned by the player are within here, placement is invalid
 func _on_outer_collision_area_entered(area: Area2D) -> void:
 	if(area.name == "CityInnerColl"):
-		print("entering " + str(area.get_parent().get_meta("ownerID")) + " " + str( master.curr_player.id))
 		if (area.get_parent().get_meta("ownerID") == master.curr_player.id): # If collided city owner == current player...
 			rangeCitiesCount += 1
 			isWithinCityRange = rangeCitiesCount
-			print(rangeCitiesCount as bool)
 	
 	if isWithinCityRange:
 		outerCirc.color = outerGreen
@@ -220,11 +221,9 @@ func _on_outer_collision_area_entered(area: Area2D) -> void:
 
 func _on_outer_collision_area_exited(area: Area2D) -> void:
 	if(area.name == "CityInnerColl"):
-		print("leaving " + str(area.get_parent().get_meta("ownerID")) + " " + str( master.curr_player.id))
 		if (area.get_parent().get_meta("ownerID") == master.curr_player.id): # If collided city owner == current player...
 			rangeCitiesCount -= 1
 			isWithinCityRange = rangeCitiesCount
-			print(rangeCitiesCount as bool)
 	
 	if isWithinCityRange:
 		outerCirc.color = outerGreen

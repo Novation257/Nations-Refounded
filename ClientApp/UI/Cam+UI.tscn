@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://lkthen7k7xap"]
+[gd_scene load_steps=4 format=3 uid="uid://lkthen7k7xap"]
 
 [ext_resource type="Script" path="res://UI/cameraControls.gd" id="1_0pqkt"]
 [ext_resource type="Script" path="res://UI/ui.gd" id="2_ebt58"]
+[ext_resource type="PackedScene" uid="uid://c5gm26pre5rg5" path="res://UI/cityBuildButton/cityBuildButton.tscn" id="3_5tf15"]
 
 [node name="Camera2D" type="Camera2D"]
 position_smoothing_enabled = true
@@ -168,6 +169,20 @@ custom_minimum_size = Vector2(0, 1375)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="CityBuildMenu" parent="UI" instance=ExtResource("3_5tf15")]
+unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -188.0
+offset_right = -600.0
+offset_bottom = -188.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [connection signal="pressed" from="UI/BuildMenu Toggle" to="UI" method="_on_build_menu_toggle_pressed"]
 [connection signal="mouse_entered" from="UI/BuildMenu" to="UI" method="_on_build_menu_mouse_entered"]

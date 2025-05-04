@@ -22,7 +22,7 @@ var placingObject:bool = false
 func placeRecourceExtractor(type:String) -> void:
 	# Load extractor UI and instanciate
 	var newUIRes:Resource = load("res://gameObjects/extractor/ExtractorPlacementUI.tscn")
-	var placementUI = newUIRes.instantiate()
+	var placementUI:ExtractorPlacementUI = newUIRes.instantiate()
 	placementUI.position = get_global_mouse_position()
 	get_node(".").add_child(placementUI)
 	placementUI.setType(type)
@@ -31,12 +31,13 @@ func placeRecourceExtractor(type:String) -> void:
 	placementUI.ready_to_place.connect(_on_extractor_placed)
 	pass
 
-func placeCity() -> void:
+func placeCity(cityName:String) -> void:
 	# Load city UI and instanciate
 	var newUIRes:Resource = load("res://gameObjects/city/cityPlacementUI.tscn")
-	var placementUI = newUIRes.instantiate()
+	var placementUI:cityPlacementUI = newUIRes.instantiate()
 	placementUI.position = get_global_mouse_position()
 	get_node(".").add_child(placementUI)
+	placementUI.cityName = cityName
 	
 	# Connect signal
 	placementUI.ready_to_place.connect(_on_city_placed)
@@ -59,7 +60,7 @@ func check_extractor_collection(extractors:Array[Node]) -> void:
 				staticUI.notify("Not enough resources to collect from " + ex_name)
 				#extractor.get_stored().print()
 
-func update_build_buttons() -> void:
+func update_extractor_build_buttons() -> void:
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
 		if(curr_player.resources.canCombine(extractorPanel.buildable.constructionCost.negateNoMod())):
 			extractorPanel.buildButton.text = "Build"
@@ -67,6 +68,28 @@ func update_build_buttons() -> void:
 		else:
 			extractorPanel.buildButton.text = "Insufficient Materials"
 			extractorPanel.buildButton.disabled = true
+
+func update_city_build_button() -> void:
+	var buildMenu:cityBuildButton = staticUI.cityBuildMenu
+	if(curr_player.resources.canCombine(buildMenu.constructionCost.negateNoMod())):
+		if buildMenu.nameInput.text != "":
+			for city:City in get_node("%Cities").get_children():
+				if city.name == buildMenu.nameInput.text:
+					# Good resources, text in field - city name taken
+					buildMenu.buildButton.text = "Name Taken"
+					buildMenu.buildButton.disabled = true
+					return
+			# Good resources, text in field, good name
+			buildMenu.buildButton.text = "Build"
+			buildMenu.buildButton.disabled = false
+		else:
+			# Good resources - no text in field
+			buildMenu.buildButton.text = "Input Name"
+			buildMenu.buildButton.disabled = true
+	else:
+		# Insufficient resources
+		buildMenu.buildButton.text = "Insufficient Materials"
+		buildMenu.buildButton.disabled = true
 
 func update_ui() -> void:
 	moneyUI.text = str(curr_player.resources.money)
@@ -81,22 +104,22 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 15000 # 15000 before demo
-	curr_player.resources.food = 5000 # 5000 before demo
-	curr_player.resources.building_materials = 5000 # 5000 before demo
-	curr_player.resources.energy = 7000 # 0 before demo
-	curr_player.resources.consumer_goods = 3000 # 0 before demo
-	curr_player.resources.composites = 600 # 0 before demo
+	curr_player.resources.money = 150000 # 15000 before demo
+	curr_player.resources.food = 50000 # 5000 before demo
+	curr_player.resources.building_materials = 50000 # 5000 before demo
+	curr_player.resources.energy = 70000 # 0 before demo
+	curr_player.resources.consumer_goods = 30000 # 0 before demo
+	curr_player.resources.composites = 6000 # 0 before demo
 	
 	# Connect all signals from child nodes to this script
 	for rn in get_node("%Res Nodes").get_children():
 		rn.node_clicked.connect(_on_res_node_clicked)
 	for extractorPanel:extractorBuildButton in staticUI.extractorPanels:
-		extractorPanel.build_button_clicked.connect(_on_build_button_pressed)
+		extractorPanel.build_button_clicked.connect(_on_extractor_build_button_pressed)
 	for city:City in get_node("%Cities").get_children():
 		city.taxes_collected.connect(_on_taxes_collected)
 		city.production_tick.connect(_on_city_production_tick)
-	
+	staticUI.cityBuildMenu.build_button_clicked.connect(_on_city_build_button_pressed)
 	# Hide build menu
 	buildMenu.visible = false
 	return
@@ -121,13 +144,14 @@ func _process(delta: float) -> void:
 	check_extractor_collection(extractors)
 	
 	# Update build menu
-	update_build_buttons()
+	update_extractor_build_buttons()
+	update_city_build_button()
 	
 	# Run input routines if button is pressed
 	if Input.is_action_just_pressed("debug1"):
 		staticUI.notify("This is a message")
 	if Input.is_action_just_pressed("debug2"):
-		placeCity()
+		placeCity("Knoxville")
 	if Input.is_action_just_pressed("debug3"):
 		pass
 	if Input.is_action_just_pressed("BuildMenuToggle"):
@@ -154,7 +178,7 @@ func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	curr_player.resources.combine(newEx.exStats.constructionCost.negateNoMod())
 	pass
 
-func _on_city_placed(city_position:Vector2) -> void:
+func _on_city_placed(city_position:Vector2, cityName:String) -> void:
 	# Load resource and instanciate
 	var newCityRes:Resource = load("res://gameObjects/city/city.tscn")
 	var newCity:City = newCityRes.instantiate()
@@ -162,6 +186,7 @@ func _on_city_placed(city_position:Vector2) -> void:
 	# Set city variables and metadata
 	newCity.set_meta("ownerID", curr_player.id)
 	newCity.position = get_global_mouse_position() #TODO: change to pioneer's position
+	newCity.name = cityName
 	newCity.population = newCity.initialPopulation
 	newCity.set_meta("population", newCity.population)
 	
@@ -169,19 +194,31 @@ func _on_city_placed(city_position:Vector2) -> void:
 	get_node("%Cities").add_child(newCity)
 	newCity.production_tick.connect(_on_city_production_tick)
 	
+	# Subtract city construction cost from the player's resources
+	curr_player.resources.combine(newCity.constructionCost.negateNoMod())
+	
 	# TODO: delete pioneer unit
 	pass
 
 func _on_res_node_clicked(extractor:String) -> void:
 	placeRecourceExtractor(extractor)
 
-func _on_build_button_pressed(extractor:String) -> void:
+func _on_extractor_build_button_pressed(extractor:String) -> void:
 	# Cancel building previous extractor
 	var buildNode := get_node("ExtractorPlacementUI")
 	if(buildNode): buildNode.queue_free()
 	
 	staticUI.toggleBuildMenu()
 	placeRecourceExtractor(extractor)
+
+func _on_city_build_button_pressed() -> void:
+	# Cancel building previous extractor
+	var buildNode := get_node("CityPlacementUI")
+	if(buildNode): buildNode.queue_free()
+	
+	staticUI.toggleCityMenu()
+	placeCity(staticUI.cityBuildMenu.nameInput.text)
+	staticUI.cityBuildMenu.nameInput.clear()
 
 func _on_city_production_tick(city:City) -> void:
 	if (city.get_meta("ownerID") != curr_player.id): pass

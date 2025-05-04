@@ -8,6 +8,7 @@ class_name StaticUI
 
 # Panels
 var extractorPanels:Array[extractorBuildButton]
+@onready var cityBuildMenu:cityBuildButton = get_node("%CityBuildMenu")
 
 # Displays a message on screen that disappears after 5 seconds
 func notify(message:String) -> void:
@@ -45,8 +46,18 @@ func notify(message:String) -> void:
 
 func toggleBuildMenu() -> void:
 	buildMenu.visible = !buildMenu.visible
-	if(buildMenu.visible == true): buildButton.text = "Close"
+	if(buildMenu.visible == true):
+		buildButton.text = "Close"
+		if(cityBuildMenu.panel.visible == true): toggleCityMenu()
 	else: buildButton.text = "Build"
+	pass
+
+func toggleCityMenu() -> void:
+	cityBuildMenu.panel.visible = !cityBuildMenu.panel.visible
+	if(cityBuildMenu.panel.visible == true): 
+		cityBuildMenu.menuToggle.text = "Close"
+		if(buildMenu.visible == true): toggleBuildMenu()
+	else: cityBuildMenu.menuToggle.text = "City"
 	pass
 
 func _ready() -> void:
@@ -64,7 +75,12 @@ func _ready() -> void:
 		extractorPanels.append(newExBtn)
 	
 	BMVContainer.custom_minimum_size.y = allExtractors.size() * 230
+	
+	cityBuildMenu.menu_toggle_pressed.connect(_on_city_menu_toggle_pressed)
 	pass
 
 func _on_build_menu_toggle_pressed() -> void:
 	toggleBuildMenu()
+
+func _on_city_menu_toggle_pressed() -> void:
+	toggleCityMenu()
