@@ -1,0 +1,26 @@
+Nations-Refounded Final Presentation Notes
+
+- Introduction/motivation
+  - Old nations concept
+  - Now defunct
+  - Our goal: Revive and expand on the ideas from the original
+- Game overview
+  - Map and terrain types
+  - Cities - the main way to grow your influence
+    - Population growth and taxes
+    - Resource usage
+  - Extractors - for gathering resources
+    - Requirements for placing (resources/terrain/city limits)
+    - Resource input/output
+  - Resource Nodes - allow construction of special high-yield extractors
+    - Create points of intrest 
+    - Demonstrate
+  - Units - for protecting your land and for forcefully aquiring more
+    - expand on functionality here?
+- Code overview
+  - Godot's node/scene system
+  - Timing system
+  - Placed object scene vs placement routine scene
+  - Map modification
+  - Anything else code-wise that needs to be explained?
+- Questions

@@ -2,7 +2,7 @@ extends Camera2D
 
 var zoom_target := zoom[0]
 var zoom_sensitivity:float = .1
-var zoom_limits:Vector2 = Vector2(.75,5)
+var zoom_limits:Vector2 = Vector2(.5,5)
 var mouse_starting_pos: Vector2 = Vector2(0,0)
 var camera_starting_pos: Vector2 = Vector2(0,0)
 
@@ -39,7 +39,7 @@ func _process(delta: float) -> void:
 	zoom = lerp(zoom, Vector2(zoom_target, zoom_target), .175)
 	
 	# Camera movement via arrow keys
-	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (15 * 1/zoom[0])
+	position += Input.get_vector("CamLeft", "CamRight", "CamUp", "CamDown").normalized() * (20 * 1/zoom[0])
 	
 	# Camera movement via mouse
 	# At start of click, get mouse and camera position
@@ -57,8 +57,8 @@ func _process(delta: float) -> void:
 	
 	old_mpos = new_mpos
 	
-	position.x = max(-2000, min(2000, position.x))
-	position.y = max(-1000, min(2000, position.y))
+	position.x = max(-4000, min(4000, position.x))
+	position.y = max(-4000, min(4000, position.y))
 	return
 
 func _on_build_menu_focus_entered() -> void:
