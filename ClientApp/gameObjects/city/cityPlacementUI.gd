@@ -210,6 +210,7 @@ func _on_outer_collision_area_entered(area: Area2D) -> void:
 		if (area.get_parent().get_meta("ownerID") == master.curr_player.id): # If collided city owner == current player...
 			rangeCitiesCount += 1
 			isWithinCityRange = rangeCitiesCount
+	if(master.get_node("%Cities").get_child_count() == 0): isWithinCityRange = true
 	
 	if isWithinCityRange:
 		outerCirc.color = outerGreen
@@ -224,6 +225,7 @@ func _on_outer_collision_area_exited(area: Area2D) -> void:
 		if (area.get_parent().get_meta("ownerID") == master.curr_player.id): # If collided city owner == current player...
 			rangeCitiesCount -= 1
 			isWithinCityRange = rangeCitiesCount
+	if(master.get_node("%Cities").get_child_count() == 0): isWithinCityRange = true
 	
 	if isWithinCityRange:
 		outerCirc.color = outerGreen

@@ -104,9 +104,9 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 15000 # 15000 before demo
-	curr_player.resources.food = 5000 # 5000 before demo
-	curr_player.resources.building_materials = 5000 # 5000 before demo
+	curr_player.resources.money = 17500 # 15000 before demo
+	curr_player.resources.food = 7500 # 5000 before demo
+	curr_player.resources.building_materials = 75000 # 5000 before demo
 	curr_player.resources.energy = 7000 # 0 before demo
 	curr_player.resources.consumer_goods = 3000 # 0 before demo
 	curr_player.resources.composites = 600 # 0 before demo

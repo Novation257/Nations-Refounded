@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmg42q2hswbd6"]
+
+[ext_resource type="Texture2D" uid="uid://bdgqqobqioyhi" path="res://sprites/bg1.png" id="1_12w2m"]
+[ext_resource type="Texture2D" uid="uid://8l1uwc00ek4g" path="res://sprites/city-icon-TEMP.png" id="2_6xlcy"]
+[ext_resource type="Script" path="res://menu/newGame.gd" id="2_jnieo"]
+[ext_resource type="Script" path="res://menu/demo.gd" id="3_ddasy"]
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="Bg1" type="Sprite2D" parent="."]
+position = Vector2(900.5, 463.5)
+scale = Vector2(1.666, 1.5)
+texture = ExtResource("1_12w2m")
+
+[node name="Title" type="Label" parent="."]
+offset_left = 165.0
+offset_top = 209.0
+offset_right = 840.0
+offset_bottom = 308.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 72
+text = "Nations-Refounded"
+
+[node name="NewGame" type="Button" parent="."]
+offset_left = 338.0
+offset_top = 394.0
+offset_right = 663.0
+offset_bottom = 494.0
+theme_override_font_sizes/font_size = 56
+text = "New Game"
+script = ExtResource("2_jnieo")
+
+[node name="LoadSave" type="Button" parent="."]
+offset_left = 338.0
+offset_top = 544.0
+offset_right = 663.0
+offset_bottom = 644.0
+theme_override_font_sizes/font_size = 56
+disabled = true
+text = "Load Save"
+
+[node name="Demo" type="Button" parent="."]
+offset_left = 338.0
+offset_top = 694.0
+offset_right = 663.0
+offset_bottom = 794.0
+theme_override_font_sizes/font_size = 56
+text = "Demo"
+script = ExtResource("3_ddasy")
+
+[node name="City-icon-temp" type="Sprite2D" parent="."]
+position = Vector2(1400, 500)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_6xlcy")
+
+[connection signal="pressed" from="NewGame" to="NewGame" method="_on_pressed"]
+[connection signal="pressed" from="Demo" to="Demo" method="_on_pressed"]
