@@ -137,7 +137,7 @@ func setType(type:String):
 	return
 
 func _ready() -> void:
-	position = Vector2(-5000, -5000) # Workaround for collision detection bug
+	position = Vector2(-10000, -10000) # Workaround for collision detection bug
 	return
 
 func _process(delta: float) -> void:
@@ -162,7 +162,7 @@ func _on_inner_collision_area_entered(area: Area2D) -> void:
 	if(area.name == "ResNodeColl"): isNotEncroachingResNode = false
 	if(area.name == "CityInnerColl"): isNotEncroachingCity = false
 	if(area.name == "CityLimitsColl"):
-		cityLimitsCount -= 1
+		cityLimitsCount += 1
 		isWithinCityLimits = cityLimitsCount
 	else: # Region - add to array of colliders
 		collisionNames.append(area.name) 
@@ -180,6 +180,7 @@ func _on_inner_collision_area_entered(area: Area2D) -> void:
 	return
 
 func _on_inner_collision_area_exited(area: Area2D) -> void:
+	print("Exited " + area.name + str(cityLimitsCount))
 	if(area.name == "ResNodeColl"): isNotEncroachingResNode = true
 	if(area.name == "CityInnerColl"): isNotEncroachingCity = true
 	if(area.name == "CityLimitsColl"):

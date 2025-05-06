@@ -165,7 +165,7 @@ func _on_inner_collision_area_exited(area: Area2D) -> void:
 				break
 	
 		# Check to see if inner collider is in the correct region
-		if checkRegion("barren") || checkRegion("plains"): isRightRegion = true
+		if checkRegion("barren") || checkRegion("plains") || checkRegion("Forest"): isRightRegion = true
 		else: isRightRegion = false
 	
 	if(isNotEncroachingResNode && isRightRegion):

@@ -113,9 +113,9 @@ func setType(type:String) -> ExtractorType:
 			constructionRegion = "forest"
 		"Quarry", "11":
 			typeName = "Quarry"
-			inputs.money = 4 * _BASEMOD
-			inputs.energy = 7 * _BASEMOD
-			outputs.building_materials = 4 * _BASEMOD
+			inputs.money = 6 * _BASEMOD
+			inputs.energy = 11 * _BASEMOD
+			outputs.building_materials = 6 * _BASEMOD
 			constructionCost.money = 950 * _BASEMOD
 			constructionRegion = "mountains"
 		"Concrete Factory", "12":
@@ -196,7 +196,7 @@ func setType(type:String) -> ExtractorType:
 			outputs.composites = 2 * _BASEMOD
 			constructionCost.money = 1200 * _BASEMOD
 			constructionCost.building_materials = 600 * _BASEMOD
-			constructionRegion = "mountains"
+			constructionRegion = "barren"
 		"Platinum Mine", "20":
 			typeName = "Platinum Mine"
 			inputs.money = 8 * _BASEMOD

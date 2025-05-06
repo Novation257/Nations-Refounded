@@ -2,7 +2,7 @@ extends Camera2D
 
 var zoom_target := zoom[0]
 var zoom_sensitivity:float = .1
-var zoom_limits:Vector2 = Vector2(.5,5)
+var zoom_limits:Vector2 = Vector2(.5,3)
 var mouse_starting_pos: Vector2 = Vector2(0,0)
 var camera_starting_pos: Vector2 = Vector2(0,0)
 

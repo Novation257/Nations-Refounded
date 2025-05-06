@@ -35,13 +35,14 @@ var population:int = initialPopulation
 var productionTime:int = 1800 # 30 minutes
 var productionCountdown:int = productionTime
 var stockpile:float = 0
+var maxStockpile:int = 150
 var inputs:Resources = Resources.new()
 
 # Construction
 var constructionCost:Resources = Resources.new()
 var cc_money = 15000
 var cc_food = 5000
-var cc_building_materials = 10000
+var cc_building_materials = 7500
 
 func buildNumString(num:float) -> String:
 	if(int(num / 100000) > 0): return(str(int(num) / 1000) + "k")
@@ -50,13 +51,13 @@ func buildNumString(num:float) -> String:
 	else: return(str(num))
 
 func calculateFoodUsage(population:int) -> int:
-	return floor(((population * .001) - .00006*pow(population, 1.2) + 5) / 2)
+	return floor(((population * .001) - .00006*pow(population, 1.2) + 5) / 3)
 
 func calculateCGUsage(population:int) -> int:
-	return floor(calculateFoodUsage(population) * .2)
+	return floor(calculateFoodUsage(population) * .4)
 
 func calculateTaxProduction(population:int) -> int:
-	return floor(calculateFoodUsage(population) * 6)
+	return floor(calculateFoodUsage(population) * 8)
 
 func growPopulation(modifier:float) -> void:
 	# Update UI according to modifier
@@ -93,7 +94,7 @@ func doProductionTick(time:int) -> void:
 	
 	UI_popDis.text = buildNumString(get_meta("population"))
 	UI_taxDis.text = buildNumString(calculateTaxProduction(population) * stockpile)
-	if(stockpile == 18*2): UI_taxDis.add_theme_color_override("font_color", Color.RED)
+	if(stockpile == maxStockpile): UI_taxDis.add_theme_color_override("font_color", Color.RED)
 	return
 
 # Check if the player has enough resources to supply the city
@@ -108,9 +109,9 @@ func checkResources(playerResources:Resources) -> int:
 
 func _ready() -> void:
 	# Set construction costs
-	constructionCost.money = 15000
-	constructionCost.food = 5000
-	constructionCost.building_materials = 10000
+	constructionCost.money = cc_money
+	constructionCost.food = cc_food
+	constructionCost.building_materials = cc_building_materials
 	
 	# Hide UI and update values
 	UI.visible = false

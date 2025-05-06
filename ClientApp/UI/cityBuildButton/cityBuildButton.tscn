@@ -25,12 +25,12 @@ text = "Build New City"
 
 [node name="ReqRegion" type="Label" parent="Panel"]
 layout_mode = 0
-offset_left = 25.0
+offset_left = 17.0
 offset_top = 60.0
-offset_right = 165.0
+offset_right = 203.0
 offset_bottom = 109.0
 text = "Required Region: 
-Barren or Plains"
+Barren, Plains, or Forest"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -51,7 +51,7 @@ offset_right = 200.0
 offset_bottom = 100.0
 text = "Money:  15000
 Food: 5000
-Building Materials:  10000
+Building Materials:  7500
 "
 
 [node name="BuildButton" type="Button" parent="Panel"]

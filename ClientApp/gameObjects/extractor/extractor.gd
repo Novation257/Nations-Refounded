@@ -23,11 +23,12 @@ var exStats = ExtractorType.new()
 var productionTime:int = 3600
 var productionCountdown:int = productionTime
 var stockpile:int = 0
+var maxStockpile = 75
 var constructionTime = 3 * productionTime
 
 # Add production to the extractor and increase stockpile when necessary
 func doProductionTick(time:int) -> void:
-	if(stockpile < 18): # Don't do production if stockiple is full (18 production cycles)
+	if(stockpile < maxStockpile): # Don't do production if stockiple is full
 		#print("Doing tick on extractor:" + name)
 		productionCountdown -= time
 		if(productionCountdown <= 0): # Production cycle completed
@@ -40,7 +41,7 @@ func doProductionTick(time:int) -> void:
 		if(productionCountdown <= productionTime): 
 			UI_stockpileDisplay.text = str(stockpile)
 			UI_stockpileDisplay.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-		if(stockpile == 18): UI_stockpileDisplay.add_theme_color_override("font_color", Color.RED)
+		if(stockpile == maxStockpile): UI_stockpileDisplay.add_theme_color_override("font_color", Color.RED)
 	return
 
 # Return the resources stored in the extractor without subtracting from the stockpile

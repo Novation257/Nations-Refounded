@@ -104,12 +104,12 @@ func _ready() -> void:
 	# Initialize player
 	curr_player = Player.new()
 	curr_player.id = 1
-	curr_player.resources.money = 150000 # 15000 before demo
-	curr_player.resources.food = 50000 # 5000 before demo
-	curr_player.resources.building_materials = 50000 # 5000 before demo
-	curr_player.resources.energy = 70000 # 0 before demo
-	curr_player.resources.consumer_goods = 30000 # 0 before demo
-	curr_player.resources.composites = 6000 # 0 before demo
+	curr_player.resources.money = 15000 # 15000 before demo
+	curr_player.resources.food = 5000 # 5000 before demo
+	curr_player.resources.building_materials = 5000 # 5000 before demo
+	curr_player.resources.energy = 7000 # 0 before demo
+	curr_player.resources.consumer_goods = 3000 # 0 before demo
+	curr_player.resources.composites = 600 # 0 before demo
 	
 	# Connect all signals from child nodes to this script
 	for rn in get_node("%Res Nodes").get_children():
@@ -165,6 +165,12 @@ func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	var newExRes:Resource = load("res://gameObjects/extractor/GenericExtractor.tscn")
 	var newEx = newExRes.instantiate()
 	
+	# Check again if the player has enough resources to build extractor
+	if(!curr_player.resources.canCombine((newEx.constructionCost.negateNoMod()))):
+		staticUI.notify("Not enough resources to build " + type)
+		newEx.queue_free()
+		return
+	
 	# Set extractor variables and metadata
 	newEx.name = str(get_node("%Extractors").get_child_count(false)) + type
 	newEx.set_meta("ownerID", curr_player.id)
@@ -182,6 +188,12 @@ func _on_city_placed(city_position:Vector2, cityName:String) -> void:
 	# Load resource and instanciate
 	var newCityRes:Resource = load("res://gameObjects/city/city.tscn")
 	var newCity:City = newCityRes.instantiate()
+	
+	# Check again if the player has enough resources to build city
+	if(!curr_player.resources.canCombine((newCity.constructionCost.negateNoMod()))):
+		staticUI.notify("Not enough resources to build city")
+		newCity.queue_free()
+		return
 	
 	# Set city variables and metadata
 	newCity.set_meta("ownerID", curr_player.id)
@@ -224,7 +236,7 @@ func _on_city_production_tick(city:City) -> void:
 	if (city.get_meta("ownerID") != curr_player.id): pass
 	var resourceCheck:int = city.checkResources(curr_player.resources)
 	if (resourceCheck == 0): # Normal production
-		if (city.stockpile < 18*2): city.stockpile += 1
+		if (city.stockpile < city.maxStockpile): city.stockpile += 1
 		city.growPopulation(1)
 		curr_player.resources.combine(city.inputs.negateNoMod())
 	elif (resourceCheck == 3): # City starving AND no consumer goods - no tax production, shrink population
@@ -236,7 +248,7 @@ func _on_city_production_tick(city:City) -> void:
 		curr_player.resources.food = 0
 		curr_player.resources.consumer_goods -= city.inputs.consumer_goods
 	elif (resourceCheck == 2): # No consumer goods - less tax production, less population growth, consume food
-		if (city.stockpile >= 18*2): city.stockpile += 0.5
+		if (city.stockpile >= city.maxStockpile): city.stockpile += 0.5
 		city.growPopulation(0.25)
 		curr_player.resources.food -= city.inputs.food
 		curr_player.resources.consumer_goods = 0
