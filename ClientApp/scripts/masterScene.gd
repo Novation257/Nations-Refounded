@@ -163,10 +163,10 @@ func _process(delta: float) -> void:
 func _on_extractor_placed(extractor_position:Vector2, type:String) -> void:
 	# Load resource and instanciate
 	var newExRes:Resource = load("res://gameObjects/extractor/GenericExtractor.tscn")
-	var newEx = newExRes.instantiate()
+	var newEx:Extractor = newExRes.instantiate()
 	
 	# Check again if the player has enough resources to build extractor
-	if(!curr_player.resources.canCombine((newEx.constructionCost.negateNoMod()))):
+	if(!curr_player.resources.canCombine((newEx.exStats.constructionCost.negateNoMod()))):
 		staticUI.notify("Not enough resources to build " + type)
 		newEx.queue_free()
 		return
