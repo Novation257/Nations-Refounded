@@ -5,7 +5,7 @@
 Nations Refounded is a resource management and colonization RTS game where players build cities on a resource-rich continent.
 
 # Installing/running
-Nations Refound can be downloaded by clicking this [link](https://github.com/cs340-25/Nations-Refounded/blob/main/ClientApp/builds/Nations-Refounded_0.1.1.exe), then selecting download from the three-dot menu in the top right. Nations Refounded *should* be compatible with modern Windows and Mac machines.
+Nations Refound can be downloaded by clicking this [link](https://github.com/Novation257/Nations-Refounded/blob/main/Releases/Nations%20Refounded%200.1.1.zip), then selecting download from the three-dot menu in the top right. Extract the zip folder's contents (the exe and pck files must be in the same folder), and run the exe to start the game. Nations Refounded *should* be compatible with modern Windows and Mac machines.
 
 
 # How to play
