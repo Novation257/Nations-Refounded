@@ -80,7 +80,7 @@ No changes - while the scope of our project changed from our original vision, ou
 Due to the fact that our planned multiplayer architecture was not completed, this will discuss the relationships/implementation of aspects within our game.
 
 ### Architecture
-![Game Design Flow Diagram](gameDesignDiagram.png)
+![Game Design Flow Diagram](Notes/gameDesignDiagram.png)
 
 The main communication between game objects is done via a master scene, which handles time management, player data, and node loading/deloading. Cities and extractors -- despite serving different functions in the game -- are functionally similar; they contain stockpile (stored resources) and input/output data, and the time data from the master node is used to govern the rate of production. This consumption and production data is sent to the master node to modify the player's overall resource counts.
 
